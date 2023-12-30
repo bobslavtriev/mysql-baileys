@@ -1,0 +1,36 @@
+{
+	"author": "bobpetrov",
+	"name": "auth-mysql",
+	"version": "1.0.0",
+	"main": "lib/index.js",
+	"types": "lib/index.d.ts",
+	"description": "Implementation of MySQL in Baileys.",
+	"homepage": "https://github.com/bobpetrov/auth-mysql",
+	"license": "MIT",
+	"scripts": {
+		"build:all": "tsc && typedoc",
+		"build:docs": "typedoc",
+		"build:tsc": "tsc",
+		"lint": "eslint src --ext .js,.ts,.jsx,.tsx",
+		"lint:fix": "eslint src --fix --ext .js,.ts,.jsx,.tsx",
+		"prepare": "tsc"
+	},
+	"repository": {
+		"url": "git+ssh://git@github.com/bobpetrov/auth-mysql.git"
+	},
+	"dependencies": {
+		"@whiskeysockets/baileys": "github:whiskeysockets/Baileys",
+		"libsignal": "github:adiwajshing/libsignal-node",
+		"mysql2": "^3.3.5",
+		"publish": "^0.6.0",
+		"uuid": "^9.0.0"
+	},
+	"devDependencies": {
+		"@adiwajshing/eslint-config": "github:adiwajshing/eslint-config",
+		"@types/node": "^16.18.69",
+		"eslint": "^8.0.0",
+		"ts-node": "^10.8.1",
+		"typedoc": "^0.24.7",
+		"typescript": "^4.6.4"
+	}
+}
