@@ -40,17 +40,25 @@ const {
 	makeWASocket,
 	makeCacheableSignalKeyStore,
 	isJidBroadcast,
+	fetchLatestBaileysVersion,
 	DisconnectReason
 } = require('@whiskeysockets/Baileys')
 const { useMySQLAuthState } = require('auth-mysql')
 const pino = require('pino')
 
 const logger = pino({
-	level: 20,
-	enabled: false
+	level: 40
 })
 
 async function startSock(sessionName){
+	const { version, error, isLatest } = await fetchLatestBaileysVersion()
+
+	//This is important, so as not to try to create a MySQL connection with unstable internet or without internet, otherwise it gives the error: "Many connections"
+	if (error || !isLatest){
+		connectToWhatsApp(sessionName)
+		return
+	}
+
 	const { state, saveCreds, removeCreds } = await useMySQLAuthState({
 		session: sessionName || '1',
 		host: 'localhost',
@@ -65,11 +73,9 @@ async function startSock(sessionName){
 			keys: makeCacheableSignalKeyStore(state.keys, logger),
 		},
 		browser: ['Windows', 'DESKTOP', '2.2344.5.0'],
-		version: [2, 2329, 9],
+		version: version,
 		qrTimeout: 45_000,
-		connectTimeoutMs: 60_000,
-		keepAliveIntervalMs: 30_000,
-		emitOwnEvents: false,
+		defaultQueryTimeoutMs: undefined, // important
 		markOnlineOnConnect: true,
 		logger: logger,
 		shouldIgnoreJid: (jid) => {
