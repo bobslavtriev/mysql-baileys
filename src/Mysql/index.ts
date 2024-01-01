@@ -24,7 +24,7 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: an
 			throw e
 		})
 
-		await conn.execute('CREATE TABLE IF NOT EXISTS `auth` (`session` varchar(50) NOT NULL, `id` varchar(70) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;')
+		await conn.execute('CREATE TABLE IF NOT EXISTS `auth` (`session` varchar(50) NOT NULL, `id` varchar(70) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM;')
 
 		setInterval(async () => {
 			await conn.ping()
