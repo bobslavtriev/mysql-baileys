@@ -54,7 +54,7 @@ async function startSock(sessionName){
 	const { version, error, isLatest } = await fetchLatestBaileysVersion()
 
 	//This is important, so as not to try to create a MySQL connection with unstable internet or without internet, otherwise it gives the error: "Many connections"
-	if (error || !isLatest){
+	if (error){
 		connectToWhatsApp(sessionName)
 		return
 	}
