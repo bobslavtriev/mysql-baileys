@@ -5,13 +5,13 @@ import { v4 } from 'uuid'
 const generateKeyPair = () => {
 	const { pubKey, privKey } = curve.generateKeyPair()
 	return {
-		private: new Buffer.from(privKey),
-		public: new Buffer.from(pubKey.slice(1))
+		private: Buffer.from(privKey),
+		public: Buffer.from(pubKey.slice(1))
 	}
 }
 
 const generateSignalPubKey = (pubKey: any) => (
-	pubKey.length === 33 ? pubKey : new Buffer.concat([Buffer.from([5]), pubKey])
+	pubKey.length === 33 ? pubKey : Buffer.concat([Buffer.from([5]), pubKey])
 )
 
 const sign = (privateKey: any, buf: Buffer) => (
@@ -27,7 +27,7 @@ const signedKeyPair = (identityKeyPair: any, keyId: any) => {
 
 export const BufferJSON = {
 	replacer: (_: any, value: any) => {
-		if(new Buffer.isBuffer(value) || value instanceof Uint8Array || value?.type === 'Buffer') {
+		if(Buffer.isBuffer(value) || value instanceof Uint8Array || value?.type === 'Buffer') {
 			return { type: 'Buffer', data: Buffer.from(value?.data || value).toString('base64') }
 		}
 
