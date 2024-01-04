@@ -1,7 +1,8 @@
 # Authentication with MySQL for Baileys
 
 ## Usage
-### 1. Create table in MySQL
+### 1. Create table in MySQL (optional)
+If you want with your specifications, if you don't create it, the code will automatically create
 ```sql
 CREATE TABLE `auth` (
 	`session` varchar(50) NOT NULL,
