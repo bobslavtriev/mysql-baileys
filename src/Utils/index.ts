@@ -19,10 +19,10 @@ const sign = (privateKey: any, buf: Buffer) => (
 )
 
 const signedKeyPair = (identityKeyPair, keyId) => {
-	const keyPair = curve.generateKeyPair()
-	const pubKey = generateSignalPubKey(keyPair.public)
+	const preKey = curve.generateKeyPair()
+	const pubKey = generateSignalPubKey(preKey.public)
 	const signature = sign(identityKeyPair.private, pubKey)
-	return { keyPair, signature, keyId }
+	return { keyPair: preKey, signature, keyId }
 }
 
 export const BufferJSON = {
@@ -44,7 +44,7 @@ export const BufferJSON = {
 }
 
 export const initAuthCreds = () => {
-	const identityKey = curve.generateKeyPair()
+	const identityKey = generateKeyPair()
 	return {
 		noiseKey: generateKeyPair(),
 		pairingEphemeralKeyPair: generateKeyPair(),
