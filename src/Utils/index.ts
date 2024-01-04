@@ -19,7 +19,7 @@ const sign = (privateKey: any, buf: Buffer) => (
 )
 
 const signedKeyPair = (identityKeyPair, keyId) => {
-	const preKey = curve.generateKeyPair()
+	const preKey = generateKeyPair()
 	const pubKey = generateSignalPubKey(preKey.public)
 	const signature = sign(identityKeyPair.private, pubKey)
 	return { keyPair: preKey, signature, keyId }
