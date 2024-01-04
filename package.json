@@ -1,16 +1,14 @@
 {
 	"author": "bobpetrov",
 	"name": "auth-mysql",
-	"version": "1.0.4",
+	"version": "1.0.6",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"description": "Implementation of MySQL in Baileys.",
 	"homepage": "https://github.com/bobpetrov/auth-mysql",
 	"license": "MIT",
 	"scripts": {
-		"build:all": "tsc && typedoc",
-		"build:docs": "typedoc",
-		"build:tsc": "tsc",
+		"build": "tsc",
 		"lint": "eslint src --ext .js,.ts,.jsx,.tsx",
 		"lint:fix": "eslint src --fix --ext .js,.ts,.jsx,.tsx",
 		"prepare": "tsc"
@@ -29,7 +27,6 @@
 		"@types/node": "^16.18.69",
 		"eslint": "^8.0.0",
 		"ts-node": "^10.8.1",
-		"typedoc": "^0.24.7",
 		"typescript": "^4.6.4"
 	}
 }
