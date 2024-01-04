@@ -8,7 +8,8 @@
 	"homepage": "https://github.com/bobpetrov/auth-mysql",
 	"license": "MIT",
 	"scripts": {
-		"build": "tsc"
+		"build": "tsc",
+		"prepare": "tsc"
 	},
 	"repository": {
 		"url": "git+ssh://git@github.com/bobpetrov/auth-mysql.git"
