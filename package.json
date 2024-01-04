@@ -1,7 +1,7 @@
 {
 	"author": "bobpetrov",
 	"name": "auth-mysql",
-	"version": "1.0.0",
+	"version": "1.0.4",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"description": "Implementation of MySQL in Baileys.",
@@ -19,10 +19,9 @@
 		"url": "git+ssh://git@github.com/bobpetrov/auth-mysql.git"
 	},
 	"dependencies": {
-		"@whiskeysockets/baileys": "github:whiskeysockets/Baileys",
+		"@whiskeysockets/baileys": "github:whiskeysockets/baileys",
 		"libsignal": "github:adiwajshing/libsignal-node",
 		"mysql2": "^3.3.5",
-		"publish": "^0.6.0",
 		"uuid": "^9.0.0"
 	},
 	"devDependencies": {
