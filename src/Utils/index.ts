@@ -5,20 +5,20 @@ import { v4 } from 'uuid'
 const generateKeyPair = () => {
 	const { pubKey, privKey } = curve.generateKeyPair()
 	return {
-		private: Buffer.from(privKey),
-		public: Buffer.from(pubKey.slice(1))
+		private: new Buffer.from(privKey),
+		public: new Buffer.from(pubKey.slice(1))
 	}
 }
 
 const generateSignalPubKey = (pubKey: any) => (
-	pubKey.length === 33 ? pubKey : Buffer.concat([Buffer.from([5]), pubKey])
+	pubKey.length === 33 ? pubKey : new Buffer.concat([Buffer.from([5]), pubKey])
 )
 
 const sign = (privateKey: any, buf: Buffer) => (
 	curve.calculateSignature(privateKey, buf)
 )
 
-const signedKeyPair = (identityKeyPair, keyId) => {
+const signedKeyPair = (identityKeyPair: any, keyId: any) => {
 	const preKey = generateKeyPair()
 	const pubKey = generateSignalPubKey(preKey.public)
 	const signature = sign(identityKeyPair.private, pubKey)
@@ -26,14 +26,14 @@ const signedKeyPair = (identityKeyPair, keyId) => {
 }
 
 export const BufferJSON = {
-	replacer: (k, value: any) => {
-		if(Buffer.isBuffer(value) || value instanceof Uint8Array || value?.type === 'Buffer') {
+	replacer: (_: any, value: any) => {
+		if(new Buffer.isBuffer(value) || value instanceof Uint8Array || value?.type === 'Buffer') {
 			return { type: 'Buffer', data: Buffer.from(value?.data || value).toString('base64') }
 		}
 
 		return value
 	},
-	reviver: (_, value: any) => {
+	reviver: (_: any, value: any) => {
 		if(typeof value === 'object' && !!value && (value.buffer === true || value.type === 'Buffer')) {
 			const val = value.data || value.value
 			return typeof val === 'string' ? Buffer.from(val, 'base64') : Buffer.from(val || [])
