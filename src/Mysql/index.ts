@@ -13,9 +13,14 @@ import { MySQLConfig, sqlData } from '../Types'
  * @param {string} session - Session name to identify the connection, allowing multisessions with mysql
  */
 
-export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: any, saveCreds: () => Promise<void>, removeCreds: () => Promise<void> }> => {
-	const newConnection = async(config: MySQLConfig) => {
-		const conn = await createConnection({
+let conn: any
+
+async function connection(config: MySQLConfig, force: boolean = false){
+	const ended = !!conn?.connection?._closing
+	const newConnection = conn === undefined
+
+	if (newConnection || ended || force){
+		conn = await createConnection({
 			host: config?.host || 'localhost',
 			user: config?.user || 'root',
 			password: config?.password || 'Password123#',
@@ -24,23 +29,30 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: an
 			throw e
 		})
 
-		await conn.execute('CREATE TABLE IF NOT EXISTS `auth` (`session` varchar(50) NOT NULL, `id` varchar(70) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM;')
+		if (newConnection) {
+			await conn.execute('CREATE TABLE IF NOT EXISTS `auth` (`session` varchar(50) NOT NULL, `id` varchar(70) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM;')
 
-		setInterval(async () => {
-			await conn.ping()
-		}, 60_000)
-
-		return conn
+			setInterval(async () => {
+				if (!conn?.connection?._closing){
+					await conn.ping()
+				}
+			}, 60_000)
+		}
 	}
 
-	const sqlConn = await newConnection(config)
+	return conn
+}
+
+export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: any, saveCreds: () => Promise<void>, removeCreds: () => Promise<void> }> => {
+	let sqlConn = await connection(config)
 
 	const session = config?.session || 'session-1'
 
 	const query = async (sql: string, values: any) => {
-		const [rows] = await sqlConn.query(sql, values).catch((e) => {
-			throw e
+		await sqlConn.ping().catch(async () => {
+			sqlConn = await connection(config, true)
 		})
+		const [rows] = await sqlConn.query(sql, values)
 		return rows as sqlData
 	}
 
