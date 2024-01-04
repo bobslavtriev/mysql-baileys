@@ -14,11 +14,6 @@ CREATE TABLE `auth` (
 ```
 
 ### 2. Install auth-mysql
-Stable version
-```
-npm i auth-mysql
-```
-
 Edge version
 ```
 npm i github:bobpetrov/auth-mysql
