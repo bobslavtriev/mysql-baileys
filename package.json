@@ -1,7 +1,7 @@
 {
 	"author": "bobpetrov",
 	"name": "auth-mysql",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"description": "Implementation of MySQL in Baileys.",
