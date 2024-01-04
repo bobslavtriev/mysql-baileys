@@ -8,10 +8,7 @@
 	"homepage": "https://github.com/bobpetrov/auth-mysql",
 	"license": "MIT",
 	"scripts": {
-		"build": "tsc",
-		"lint": "eslint src --ext .js,.ts,.jsx,.tsx",
-		"lint:fix": "eslint src --fix --ext .js,.ts,.jsx,.tsx",
-		"prepare": "tsc"
+		"build": "tsc"
 	},
 	"repository": {
 		"url": "git+ssh://git@github.com/bobpetrov/auth-mysql.git"
@@ -23,9 +20,7 @@
 		"uuid": "^9.0.0"
 	},
 	"devDependencies": {
-		"@adiwajshing/eslint-config": "github:adiwajshing/eslint-config",
 		"@types/node": "^16.18.69",
-		"eslint": "^8.0.0",
 		"ts-node": "^10.8.1",
 		"typescript": "^4.6.4"
 	}
