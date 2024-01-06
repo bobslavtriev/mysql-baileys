@@ -1,6 +1,7 @@
 import { curve } from 'libsignal'
 import { randomBytes } from 'crypto'
 import { v4 } from 'uuid'
+import { KeyPair, valueReplacer, valueReviver } from '../Types'
 
 const generateKeyPair = () => {
 	const { pubKey, privKey } = curve.generateKeyPair()
@@ -10,15 +11,15 @@ const generateKeyPair = () => {
 	}
 }
 
-const generateSignalPubKey = (pubKey: any) => (
-	pubKey.length === 33 ? pubKey : Buffer.concat([Buffer.from([5]), pubKey])
-)
+const generateSignalPubKey = (pubKey: Uint8Array) => {
+	return pubKey.length === 33 ? pubKey : Buffer.concat([Buffer.from([5]), pubKey])
+}
 
-const sign = (privateKey: any, buf: Buffer) => (
-	curve.calculateSignature(privateKey, buf)
-)
+const sign = (privateKey: object, buf: Uint8Array) => {
+	return curve.calculateSignature(privateKey, buf)
+}
 
-const signedKeyPair = (identityKeyPair: any, keyId: any) => {
+const signedKeyPair = (identityKeyPair: KeyPair, keyId: number) => {
 	const preKey = generateKeyPair()
 	const pubKey = generateSignalPubKey(preKey.public)
 	const signature = sign(identityKeyPair.private, pubKey)
@@ -26,19 +27,19 @@ const signedKeyPair = (identityKeyPair: any, keyId: any) => {
 }
 
 export const BufferJSON = {
-	replacer: (_: any, value: any) => {
-		if(Buffer.isBuffer(value) || value instanceof Uint8Array || value?.type === 'Buffer') {
-			return { type: 'Buffer', data: Buffer.from(value?.data || value).toString('base64') }
+	replacer: (_: string, value: valueReplacer) => {
+		if(value?.type === 'Buffer' && Array.isArray(value?.data)) {
+			return {
+				type: 'Buffer',
+				data: Buffer.from(value?.data).toString('base64')
+			}
 		}
-
 		return value
 	},
-	reviver: (_: any, value: any) => {
-		if(typeof value === 'object' && !!value && (value.buffer === true || value.type === 'Buffer')) {
-			const val = value.data || value.value
-			return typeof val === 'string' ? Buffer.from(val, 'base64') : Buffer.from(val || [])
+	reviver: (_: string, value: valueReviver) => {
+		if(value?.type === 'Buffer') {
+			return Buffer.from(value?.data, 'base64')
 		}
-
 		return value
 	}
 }
@@ -62,8 +63,8 @@ export const initAuthCreds = () => {
 		deviceId: Buffer.from(v4().replace(/-/g, ''), 'hex').toString('base64url'),
 		phoneId: v4(),
 		identityId: randomBytes(20),
-		registered: false,
 		backupToken: randomBytes(20),
+		registered: false,
 		registration: {},
 		pairingCode: undefined
 	}
