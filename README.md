@@ -19,10 +19,6 @@ Edge version:
 ```
 npm i github:bobslavtriev/mysql-baileys
 ```
-Stable version:
-```
-npm i mysql-baileys
-```
 
 ### 3. Import code
 ```ts
