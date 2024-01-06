@@ -28,11 +28,11 @@ const { useMySQLAuthState } = require('mysql-baileys')
 ### 4. Implement code
 ```ts
 const { state, saveCreds, removeCreds } = await useMySQLAuthState({
-	session: sessionName,
-	host: 'localhost',
-	user: 'root',
-	password: 'Password123#',
-	database: 'auth'
+	session: sessionName, // required
+	host: 'localhost', // optional
+	user: 'root', // optional
+	password: 'Password123#', // required
+	database: 'baileys' // required
 })
 ```
 
@@ -50,11 +50,11 @@ async function startSock(sessionName){
 	}
 
 	const { state, saveCreds, removeCreds } = await useMySQLAuthState({
-		session: sessionName,
-		host: 'localhost',
-		user: 'root',
-		password: 'Password123#',
-		database: 'auth'
+		session: sessionName, // required
+		host: 'localhost', // optional
+		user: 'root', // optional
+		password: 'Password123#', // required
+		database: 'baileys' // required
 	})
 
 	const sock = makeWASocket({
