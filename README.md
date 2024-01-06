@@ -15,14 +15,18 @@ CREATE TABLE `auth` (
 ```
 
 ### 2. Install auth-mysql
-Edge version
+Edge version:
 ```
-npm i github:bobpetrov/auth-mysql
+npm i github:bobslavtriev/mysql-baileys
+```
+Stable version:
+```
+npm i mysql-baileys
 ```
 
 ### 3. Import code
 ```ts
-const { useMySQLAuthState } = require('auth-mysql')
+const { useMySQLAuthState } = require('mysql-baileys')
 ```
 
 ### 4. Implement code
@@ -39,7 +43,7 @@ const { state, saveCreds, removeCreds } = await useMySQLAuthState({
 # Complete code for use
 ```ts
 const { makeWASocket, makeCacheableSignalKeyStore, fetchLatestBaileysVersion } = require('@whiskeysockets/Baileys')
-const { useMySQLAuthState } = require('auth-mysql')
+const { useMySQLAuthState } = require('mysql-baileys')
 
 async function startSock(sessionName){
 	const { error } = await fetchLatestBaileysVersion()
