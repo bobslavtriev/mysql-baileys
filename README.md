@@ -42,10 +42,6 @@ const { makeWASocket, makeCacheableSignalKeyStore, fetchLatestBaileysVersion } =
 const { useMySQLAuthState } = require('auth-mysql')
 
 async function startSock(sessionName){
-	if (typeof sessionName !== 'string'){
-		throw new Error('No session name! You need to set the session name.')
-	}
-
 	const { error } = await fetchLatestBaileysVersion()
 
 	if (error){
