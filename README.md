@@ -42,7 +42,7 @@ const { makeWASocket, makeCacheableSignalKeyStore, fetchLatestBaileysVersion } =
 const { useMySQLAuthState } = require('mysql-baileys')
 
 async function startSock(sessionName){
-	const { error } = await fetchLatestBaileysVersion()
+	const { error, version } = await fetchLatestBaileysVersion()
 
 	if (error){
 		console.log(`Session: ${sessionName} | No connection, check your internet.`)
@@ -62,7 +62,7 @@ async function startSock(sessionName){
 			creds: state.creds,
 			keys: makeCacheableSignalKeyStore(state.keys, logger),
 		},
-		version: [2, 2329, 9],
+		version: version,
 		defaultQueryTimeoutMs: undefined
 	})
 
