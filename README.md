@@ -14,7 +14,7 @@ CREATE TABLE `auth` (
 ) ENGINE=MyISAM
 ```
 
-### 2. Install auth-mysql
+### 2. Install mysql-baileys
 Edge version:
 ```
 npm i github:bobslavtriev/mysql-baileys
