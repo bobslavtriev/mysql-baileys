@@ -21,10 +21,11 @@ async function connection(config: MySQLConfig, force: true | false = false){
 
 	if (newConnection || ended || force){
 		conn = await createConnection({
-			host: config?.host || 'localhost',
-			user: config?.user || 'root',
-			password: config?.password || 'Password123#',
-			database: config?.database || 'base'
+			host: (config === null || config === void 0 ? void 0 : config.host) || 'localhost',
+            		user: (config === null || config === void 0 ? void 0 : config.user) || 'root',
+            		password: (config === null || config === void 0 ? void 0 : config.password) || 'Password123#',
+            		database: (config === null || config === void 0 ? void 0 : config.database) || 'base',
+            		ssl: (config === null || config === void 0 ? void 0 : config.ssl)
 		}).catch((e) => {
 			throw e
 		})
