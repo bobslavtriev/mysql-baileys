@@ -23,6 +23,7 @@ export type MySQLConfig = {
 	password: string
 	database: string
 	ssl?: any | undefined
+	tableName?: string | undefined
 }
 
 export type valueReplacer = {
