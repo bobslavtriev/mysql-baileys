@@ -13,7 +13,8 @@
 	"scripts": {
 		"lint": "eslint src --ext .ts",
 		"build": "tsc",
-		"prepare": "tsc"
+		"prepare": "tsc",
+		"postinstall": "npm run build"
 	},
 	"repository": {
 		"url": "git@github.com/bobslavtriev/mysql-baileys.git"
