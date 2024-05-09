@@ -24,6 +24,7 @@ export type MySQLConfig = {
 	database: string
 	ssl?: any | undefined
 	tableName?: string | undefined
+	isJSONDataType?: boolean | undefined
 }
 
 export type valueReplacer = {

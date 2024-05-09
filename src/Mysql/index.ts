@@ -58,6 +58,8 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: ob
 
 	const tableName = config?.tableName || DEFAULT_TABLE_NAME;
 
+	const isJSONDataType = config?.isJSONDataType || true;
+
 	const query = async (sql: string, values: Array<string>) => {
 		await sqlConn.ping().catch(async () => {
 			sqlConn = await connection(config, true)
@@ -71,7 +73,9 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: ob
 		if(!data[0]?.value){
 			return null
 		}
-		const creds = JSON.stringify(data[0].value)
+		// if the column "value" is native JSON type column (as in recent MySQL versions) we should transform it back to string first to apply the reviver
+		// otherwise we already have a string
+		const creds = isJSONDataType ? JSON.stringify(data[0].value) : data[0].value
 		const credsParsed = JSON.parse(creds, BufferJSON.reviver)
 		return credsParsed
 	}
