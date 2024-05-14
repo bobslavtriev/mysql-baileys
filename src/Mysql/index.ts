@@ -58,7 +58,7 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: ob
 
 	const tableName = config?.tableName || DEFAULT_TABLE_NAME;
 
-	const isJSONDataType = typeof config.isJSONDataType !== 'undefined' ? config.isJSONDataType : true;
+	const isJSONDataType = typeof config.isJSONDataType === 'boolean' ? config.isJSONDataType : true;
 
 	const query = async (sql: string, values: Array<string>) => {
 		await sqlConn.ping().catch(async () => {
