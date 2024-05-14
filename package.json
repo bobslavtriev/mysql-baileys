@@ -13,18 +13,19 @@
 	"scripts": {
 		"lint": "eslint src --ext .ts",
 		"build": "tsc",
-		"prepare": "tsc"
+		"prepare": "tsc",
+		"postinstall": "npm run build"
 	},
 	"repository": {
 		"url": "git@github.com/bobslavtriev/mysql-baileys.git"
 	},
 	"dependencies": {
-		"@whiskeysockets/baileys": "github:whiskeysockets/baileys",
 		"libsignal": "github:adiwajshing/libsignal-node",
 		"mysql2": "^3.3.5",
 		"uuid": "^9.0.0"
 	},
 	"devDependencies": {
+		"@whiskeysockets/baileys": "github:whiskeysockets/baileys",
 		"@adiwajshing/eslint-config": "github:adiwajshing/eslint-config",
 		"@types/node": "^16.18.69",
 		"@typescript-eslint/eslint-plugin": "^6.18.0",

@@ -14,10 +14,13 @@ import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds } from '../Typ
  */
 
 let conn: sqlConnection
+const DEFAULT_TABLE_NAME = 'auth';
 
 async function connection(config: MySQLConfig, force: true | false = false){
 	const ended = !!conn?.connection?._closing
 	const newConnection = conn === undefined
+
+	const tableName = config?.tableName || DEFAULT_TABLE_NAME;
 
 	if (newConnection || ended || force){
 		conn = await createConnection({
@@ -31,7 +34,7 @@ async function connection(config: MySQLConfig, force: true | false = false){
 		})
 
 		if (newConnection) {
-			await conn.execute('CREATE TABLE IF NOT EXISTS `auth` (`session` varchar(50) NOT NULL, `id` varchar(70) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM;')
+			await conn.execute('CREATE TABLE IF NOT EXISTS `' + tableName + '` (`session` varchar(50) NOT NULL, `id` varchar(70) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM;')
 
 			setInterval(async () => {
 				if (!conn?.connection?._closing){
@@ -53,6 +56,10 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: ob
 
 	const session = config?.session
 
+	const tableName = config?.tableName || DEFAULT_TABLE_NAME;
+
+	const isJSONDataType = typeof config.isJSONDataType !== 'undefined' ? config.isJSONDataType : true;
+
 	const query = async (sql: string, values: Array<string>) => {
 		await sqlConn.ping().catch(async () => {
 			sqlConn = await connection(config, true)
@@ -62,26 +69,28 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: ob
 	}
 
 	const readData = async (id: string) => {
-		const data = await query(`SELECT value FROM auth WHERE id = ? AND session = ?`, [id, session])
+		const data = await query(`SELECT value FROM ${tableName} WHERE id = ? AND session = ?`, [id, session])
 		if(!data[0]?.value){
 			return null
 		}
-		const creds = JSON.stringify(data[0].value)
+		// if the column "value" is native JSON type column (as in recent MySQL versions) we should transform it back to string first to apply the reviver
+		// otherwise we already have a string
+		const creds = isJSONDataType ? JSON.stringify(data[0].value) : data[0].value
 		const credsParsed = JSON.parse(creds, BufferJSON.reviver)
 		return credsParsed
 	}
 
 	const writeData = async (id: string, value: object) => {
 		const valueFixed = JSON.stringify(value, BufferJSON.replacer)
-		await query(`INSERT INTO auth (value, id, session) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?`, [valueFixed, id, session, valueFixed])
+		await query(`INSERT INTO ${tableName} (value, id, session) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?`, [valueFixed, id, session, valueFixed])
 	}
 
 	const removeData = async (id: string) => {
-		await query(`DELETE FROM auth WHERE id = ? AND session = ?`, [id, session])
+		await query(`DELETE FROM ${tableName} WHERE id = ? AND session = ?`, [id, session])
 	}
 
 	const removeAll = async () => {
-		await query(`DELETE FROM auth WHERE session = ?`, [session])
+		await query(`DELETE FROM ${tableName} WHERE session = ?`, [session])
 	}
 
 	const creds: AuthenticationCreds = await readData('creds') || initAuthCreds()
