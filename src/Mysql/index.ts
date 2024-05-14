@@ -75,7 +75,7 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: ob
 		}
 		// if the column "value" is native JSON type column (as in recent MySQL versions) we should transform it back to string first to apply the reviver
 		// otherwise we already have a string
-		const creds = isJSONDataType ? JSON.stringify(data[0].value) : data[0].value
+		const creds = isJSONDataType && data[0].value.constructor === Object ? JSON.stringify(data[0].value) : data[0].value
 		const credsParsed = JSON.parse(creds, BufferJSON.reviver)
 		return credsParsed
 	}
