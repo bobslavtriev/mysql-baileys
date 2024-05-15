@@ -91,6 +91,7 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: ob
 				await new Promise(r => setTimeout(r, retryRequestDelayMs))
 			}
 		}
+		return [] as sqlData 
 	}
 
 	const readData = async (id: string) => {
