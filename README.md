@@ -63,7 +63,7 @@ type MySQLConfig = {
 	/* Maximum attempts if the query fails, by default 10 */
 	maxtRetries: number | undefined
 	/* MySql SSL config */
-	ssl?: any
+	ssl?: string | SslOptions | undefined
 }
 ```
 
