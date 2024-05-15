@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.1.4
         with:
           fetch-depth: 0
 
@@ -21,15 +21,18 @@ jobs:
         run: git fetch --tags -f || true
 
       - name: Setup Node
-        uses: actions/setup-node@v3.6.0
+        uses: actions/setup-node@v4.0.2
         with:
           node-version: 18.x
+          registry-url: "https://registry.npmjs.org"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4.0.2
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -39,6 +42,13 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      - name: Publish in NPM
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Build NPM package
         run: yarn pack && mv mysql-baileys-*.tgz mysql-baileys-nightly.tgz
@@ -52,14 +62,14 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Update Nightly TAG
-        uses: richardsimko/update-tag@v1
+        uses: richardsimko/update-tag@v1.0.11
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: nightly
 
       - name: Update Nightly Release
-        uses: meeDamian/github-release@2.0
+        uses: meeDamian/github-release@v2.0.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
