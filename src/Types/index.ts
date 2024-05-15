@@ -12,7 +12,7 @@ export interface sqlData {
 
 export interface sqlConnection extends Connection {
 	connection?: {
-		_closing?: boolean | undefined
+		_closing?: boolean
 	}
 }
 
@@ -22,9 +22,11 @@ export type MySQLConfig = {
 	user: string
 	password: string
 	database: string
-	ssl?: any | undefined
-	tableName?: string | undefined
-	isJSONDataType?: boolean | undefined
+	tableName: string | undefined
+	keepAliveIntervalMs: number | undefined
+	retryRequestDelayMs: number | undefined
+	maxtRetries: number | undefined
+	ssl?: any
 }
 
 export type valueReplacer = {
@@ -101,5 +103,6 @@ export type AuthenticationCreds = SignalCreds & {
 	registered: boolean
 	backupToken: Buffer
 	registration: RegistrationOptions
-	pairingCode: string | undefined
+	pairingCode?: string
+	lastPropHash?: string
 }

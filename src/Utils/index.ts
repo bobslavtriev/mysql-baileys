@@ -66,6 +66,7 @@ export const initAuthCreds = () => {
 		backupToken: randomBytes(20),
 		registered: false,
 		registration: {},
-		pairingCode: undefined
+		pairingCode: undefined,
+		lastPropHash: undefined
 	}
 }

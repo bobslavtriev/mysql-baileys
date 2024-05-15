@@ -33,9 +33,34 @@ const { state, saveCreds, removeCreds } = await useMySQLAuthState({
 	user: 'root', // optional
 	password: 'Password123#', // required
 	database: 'baileys', // required
-	tableName: 'auth', // optional
-	isJSONDataType: true // optional
+	tableName: 'auth' // optional
 })
+```
+
+### 5. All parameters for useMySQLAuthState()
+```ts
+type MySQLConfig = {
+	/* Session name to identify the connection, allowing multisessions with mysql */
+	session: string
+	/* MySql host, by default localhost */
+	host: string
+	/* MySql user, by default root */
+	user: string
+	/* MySql password */
+	password: string
+	/* MySql database name */
+	database: string
+	/* MySql table name, by default auth */
+	tableName: string | undefined
+	/* Always keep active, by default 30s */
+	keepAliveIntervalMs: number | undefined
+	/* Retry the query at each interval if it fails, by default 200ms */
+	retryRequestDelayMs: number | undefined
+	/* Maximum attempts if the query fails, by default 10 */
+	maxtRetries: number | undefined
+	/* MySql SSL config */
+	ssl?: any
+}
 ```
 
 # Complete code for use
@@ -57,8 +82,7 @@ async function startSock(sessionName){
 		user: 'root', // optional
 		password: 'Password123#', // required
 		database: 'baileys', // required
-		tableName: 'auth', // optional
-		isJSONDataType: true // optional
+		tableName: 'auth' // optional
 	})
 
 	const sock = makeWASocket({
