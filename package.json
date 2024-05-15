@@ -1,7 +1,7 @@
 {
 	"author": "bobslavtriev",
 	"name": "mysql-baileys",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"description": "Implementation of MySQL in Baileys.",
@@ -13,8 +13,7 @@
 	"scripts": {
 		"lint": "eslint src --ext .ts",
 		"build": "tsc",
-		"prepare": "tsc",
-		"postinstall": "npm run build"
+		"prepare": "tsc"
 	},
 	"repository": {
 		"url": "git@github.com/bobslavtriev/mysql-baileys.git"
