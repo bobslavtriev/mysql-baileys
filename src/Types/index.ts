@@ -1,5 +1,6 @@
 import { proto } from '@whiskeysockets/baileys'
 import { Connection } from 'mysql2/promise'
+import type { SslOptions } from 'mysql2/promise'
 
 export type MinimalMessage = Pick<proto.IWebMessageInfo, 'key' | 'messageTimestamp'>
 
@@ -26,7 +27,7 @@ export type MySQLConfig = {
 	keepAliveIntervalMs: number | undefined
 	retryRequestDelayMs: number | undefined
 	maxtRetries: number | undefined
-	ssl?: object | boolean | undefined
+	ssl?: string | SslOptions | undefined
 }
 
 export type valueReplacer = {
