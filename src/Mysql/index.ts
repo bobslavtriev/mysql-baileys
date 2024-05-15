@@ -10,62 +10,87 @@ import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds } from '../Typ
  * @param {string} user - MySql user, by default root
  * @param {string} password - MySql password
  * @param {string} database - MySql database name
+ * @param {string} tableName - MySql table name, by default auth
+ * @param {string} keepAliveIntervalMs - Always keep active, by default 30s
+ * @param {string} retryRequestDelayMs - Retry the query at each interval if it fails, by default 200ms
+ * @param {string} maxtRetries - Maximum attempts if the query fails, by default 10
  * @param {string} session - Session name to identify the connection, allowing multisessions with mysql
  */
 
 let conn: sqlConnection
+let pending: boolean = true
+let taskKeepAlive: NodeJS.Timeout | undefined
 const DEFAULT_TABLE_NAME = 'auth';
 
 async function connection(config: MySQLConfig, force: true | false = false){
 	const ended = !!conn?.connection?._closing
 	const newConnection = conn === undefined
-
-	const tableName = config?.tableName || DEFAULT_TABLE_NAME;
+	const tableName = config?.tableName || DEFAULT_TABLE_NAME
 
 	if (newConnection || ended || force){
+		pending = true
+
 		conn = await createConnection({
-			host: (config === null || config === void 0 ? void 0 : config.host) || 'localhost',
-            		user: (config === null || config === void 0 ? void 0 : config.user) || 'root',
-            		password: (config === null || config === void 0 ? void 0 : config.password) || 'Password123#',
-            		database: (config === null || config === void 0 ? void 0 : config.database) || 'base',
-            		ssl: (config === null || config === void 0 ? void 0 : config.ssl)
+			host: config?.host || 'localhost',
+			user: config?.user || 'root',
+			password: config.password || 'Password123#',
+			database: config.database || 'base',
+			ssl: config?.ssl
 		}).catch((e) => {
 			throw e
 		})
 
+		pending = false
+
 		if (newConnection) {
 			await conn.execute('CREATE TABLE IF NOT EXISTS `' + tableName + '` (`session` varchar(50) NOT NULL, `id` varchar(70) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM;')
-
-			setInterval(async () => {
-				if (!conn?.connection?._closing){
-					await conn.ping()
-				}
-			}, 60_000)
 		}
 	}
 
 	return conn
 }
 
-export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: object, saveCreds: () => Promise<void>, removeCreds: () => Promise<void> }> => {
-	if (typeof config.session !== 'string'){
-		throw new Error('Session name must be a string')
+export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: object, saveCreds: () => Promise<void>, clear: () => Promise<void>, removeCreds: () => Promise<void> }> => {
+	if (typeof config?.session !== 'string'){
+		throw new Error('session name must be a string')
 	}
 
 	let sqlConn = await connection(config)
 
-	const session = config?.session
+	const keepAliveIntervalMs = config?.keepAliveIntervalMs || 30_000
+	const retryRequestDelayMs = config?.retryRequestDelayMs || 200
+	const maxtRetries = config?.maxtRetries || 10
 
-	const tableName = config?.tableName || DEFAULT_TABLE_NAME;
+	const reconnect = async () => {
+		if (!pending){
+			sqlConn = await connection(config, true)
+		}
+	}
 
-	const isJSONDataType = typeof config.isJSONDataType === 'boolean' ? config.isJSONDataType : true;
+	if (taskKeepAlive){
+		clearInterval(taskKeepAlive)
+	}
+
+	taskKeepAlive = setInterval(async () => {
+		await conn.ping().catch(async () => await reconnect())
+		if (!!conn?.connection?._closing){
+			await reconnect()
+		}
+	}, keepAliveIntervalMs)
+
+	const session = config.session
+
+	const tableName = config?.tableName || DEFAULT_TABLE_NAME
 
 	const query = async (sql: string, values: Array<string>) => {
-		await sqlConn.ping().catch(async () => {
-			sqlConn = await connection(config, true)
-		})
-		const [rows] = await sqlConn.query(sql, values)
-		return rows as sqlData
+		for (let x = 0; x < maxtRetries; x++){
+			try {
+				const [rows] = await sqlConn.query(sql, values)
+				return rows as sqlData
+			} catch(e){
+				await new Promise(r => setTimeout(r, retryRequestDelayMs))
+			}
+		}
 	}
 
 	const readData = async (id: string) => {
@@ -73,9 +98,7 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: ob
 		if(!data[0]?.value){
 			return null
 		}
-		// if the column "value" is native JSON type column (as in recent MySQL versions) we should transform it back to string first to apply the reviver
-		// otherwise we already have a string
-		const creds = isJSONDataType && data[0].value.constructor === Object ? JSON.stringify(data[0].value) : data[0].value
+		const creds = typeof data[0].value === 'object' ? JSON.stringify(data[0].value) : data[0].value
 		const credsParsed = JSON.parse(creds, BufferJSON.reviver)
 		return credsParsed
 	}
@@ -87,6 +110,10 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: ob
 
 	const removeData = async (id: string) => {
 		await query(`DELETE FROM ${tableName} WHERE id = ? AND session = ?`, [id, session])
+	}
+
+	const clearAll = async () => {
+		await query(`DELETE FROM ${tableName} WHERE id != 'creds' AND session = ?`, [session])
 	}
 
 	const removeAll = async () => {
@@ -127,6 +154,9 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: ob
 		},
 		saveCreds: async () => {
 			await writeData('creds', creds)
+		},
+		clear: async () => {
+			await clearAll()
 		},
 		removeCreds: async () => {
 			await removeAll()
