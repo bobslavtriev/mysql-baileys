@@ -42,16 +42,12 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
-      - name: Publish in NPM
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Update version to alpha
+        run: yarn version --prerelease --preid=alpha --no-git --no-git-tag-version
 
       - name: Build NPM package
-        run: yarn pack && mv mysql-baileys-*.tgz mysql-baileys-nightly.tgz
+        run: yarn pack && mv *.tgz mysql-baileys-nightly.tgz
 
       - name: Generate Changelog
         id: generate_changelog
@@ -69,7 +65,7 @@ jobs:
           tag_name: nightly
 
       - name: Update Nightly Release
-        uses: meeDamian/github-release@v2.0.3
+        uses: meeDamian/github-release@2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
