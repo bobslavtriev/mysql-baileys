@@ -18,12 +18,15 @@ export interface sqlConnection extends Connection {
 
 export type MySQLConfig = {
 	session: string
-	host?: string
-	user?: string
+	host: string
+	user: string
 	password: string
 	database: string
-	tableName?: string
-	ssl?: object | boolean
+	tableName: string | undefined
+	keepAliveIntervalMs: number | undefined
+	retryRequestDelayMs: number | undefined
+	maxtRetries: number | undefined
+	ssl?: any
 }
 
 export type valueReplacer = {
