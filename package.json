@@ -1,7 +1,7 @@
 {
 	"author": "bobslavtriev",
 	"name": "mysql-baileys",
-	"version": "1.2.2",
+	"version": "1.3.0",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"description": "Implementation of MySQL in Baileys.",
@@ -22,7 +22,7 @@
 		"prepare": "tsc"
 	},
 	"repository": {
-		"url": "git@github.com/bobslavtriev/mysql-baileys.git"
+		"url": "git+ssh://git@github.com/bobslavtriev/mysql-baileys.git"
 	},
 	"dependencies": {
 		"libsignal": "github:adiwajshing/libsignal-node",
