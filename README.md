@@ -15,9 +15,13 @@ CREATE TABLE `auth` (
 ```
 
 ### 2. Install mysql-baileys
-Edge version:
+Edge Version:
 ```
 npm i github:bobslavtriev/mysql-baileys
+```
+Stable Version:
+```
+npm i bobslavtriev/mysql-baileys
 ```
 
 ### 3. Import code
