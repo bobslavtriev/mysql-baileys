@@ -18,7 +18,7 @@ import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds } from '../Typ
  */
 
 let conn: sqlConnection
-let pending: boolean = true
+let pending: boolean | undefined
 let taskKeepAlive: NodeJS.Timeout | undefined
 const DEFAULT_TABLE_NAME = 'auth';
 
@@ -73,7 +73,7 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: ob
 
 	taskKeepAlive = setInterval(async () => {
 		await conn.ping().catch(async () => await reconnect())
-		if (!!conn?.connection?._closing){
+		if (conn?.connection?._closing){
 			await reconnect()
 		}
 	}, keepAliveIntervalMs)
