@@ -33,8 +33,7 @@ const { state, saveCreds, removeCreds } = await useMySQLAuthState({
 	user: 'root', // optional
 	password: 'Password123#', // required
 	database: 'baileys', // required
-	tableName: 'auth', // optional
-	isJSONDataType: true // optional
+	tableName: 'auth' // optional
 })
 ```
 
@@ -57,8 +56,7 @@ async function startSock(sessionName){
 		user: 'root', // optional
 		password: 'Password123#', // required
 		database: 'baileys', // required
-		tableName: 'auth', // optional
-		isJSONDataType: true // optional
+		tableName: 'auth' // optional
 	})
 
 	const sock = makeWASocket({
