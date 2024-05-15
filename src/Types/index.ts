@@ -26,7 +26,7 @@ export type MySQLConfig = {
 	keepAliveIntervalMs: number | undefined
 	retryRequestDelayMs: number | undefined
 	maxtRetries: number | undefined
-	ssl?: any
+	ssl?: object | boolean | undefined
 }
 
 export type valueReplacer = {
