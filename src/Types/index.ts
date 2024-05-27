@@ -21,7 +21,7 @@ export type MySQLConfig = {
 	session: string
 	host: string
 	user: string
-	port: string | number | undefined
+	port: number | undefined
 	password: string
 	database: string
 	tableName: string | undefined
