@@ -7,6 +7,7 @@ import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds } from '../Typ
  * Stores the full authentication state in mysql
  * Far more efficient than file
  * @param {string} host - MySql host, by default localhost
+ * @param {string} port - MySql port, by default 3306
  * @param {string} user - MySql user, by default root
  * @param {string} password - MySql password
  * @param {string} database - MySql database name
@@ -32,6 +33,7 @@ async function connection(config: MySQLConfig, force: true | false = false){
 
 		conn = await createConnection({
 			host: config?.host || 'localhost',
+			port: config?.port && !isNaN(config?.port) ? parseInt(config.port) : 3306,
 			user: config?.user || 'root',
 			password: config.password || 'Password123#',
 			database: config.database || 'base',
@@ -40,11 +42,11 @@ async function connection(config: MySQLConfig, force: true | false = false){
 			throw e
 		})
 
-		pending = false
-
 		if (newConnection) {
 			await conn.execute('CREATE TABLE IF NOT EXISTS `' + tableName + '` (`session` varchar(50) NOT NULL, `id` varchar(70) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM;')
 		}
+
+		pending = false
 	}
 
 	return conn
