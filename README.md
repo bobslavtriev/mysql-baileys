@@ -55,7 +55,7 @@ type MySQLConfig = {
 	/* MySql host, by default localhost */
 	host: string
 	/* MySql port, by default 3306 */
-	port: string | number | undefined
+	port: number | undefined
 	/* MySql user, by default root */
 	user: string
 	/* MySql password */
