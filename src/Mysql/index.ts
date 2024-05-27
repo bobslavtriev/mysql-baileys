@@ -33,7 +33,7 @@ async function connection(config: MySQLConfig, force: true | false = false){
 
 		conn = await createConnection({
 			host: config?.host || 'localhost',
-			port: config?.port && !isNaN(config?.port) ? parseInt(config.port) : 3306,
+			port: config?.port || 3306,
 			user: config?.user || 'root',
 			password: config.password || 'Password123#',
 			database: config.database || 'base',
