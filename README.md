@@ -39,6 +39,7 @@ const { useMySQLAuthState } = require('mysql-baileys')
 const { state, saveCreds, removeCreds } = await useMySQLAuthState({
 	session: sessionName, // required
 	host: 'localhost', // optional
+	port: 3306, // optional
 	user: 'root', // optional
 	password: 'Password123#', // required
 	database: 'baileys', // required
@@ -53,6 +54,8 @@ type MySQLConfig = {
 	session: string
 	/* MySql host, by default localhost */
 	host: string
+	/* MySql port, by default 3306 */
+	port: string | number | undefined
 	/* MySql user, by default root */
 	user: string
 	/* MySql password */
@@ -88,6 +91,7 @@ async function startSock(sessionName){
 	const { state, saveCreds, removeCreds } = await useMySQLAuthState({
 		session: sessionName, // required
 		host: 'localhost', // optional
+		port: 3306, // optional
 		user: 'root', // optional
 		password: 'Password123#', // required
 		database: 'baileys', // required
