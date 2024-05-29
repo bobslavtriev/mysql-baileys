@@ -1,67 +1,8 @@
-import { proto } from '@whiskeysockets/baileys'
 import { Connection } from 'mysql2/promise'
-import type { SslOptions } from 'mysql2/promise'
 
-export type Awaitable<T> = T | Promise<T>
+type Awaitable<T> = T | Promise<T>
 
-export type MinimalMessage = Pick<proto.IWebMessageInfo, 'key' | 'messageTimestamp'>
-
-export interface sqlData {
-	constructor: {
-		name: 'RowDataPacket';
-	};
-	value?: Array<object>
-}
-
-export interface sqlConnection extends Connection {
-	connection?: {
-		_closing?: boolean
-	}
-}
-
-export type MySQLConfig = {
-	session: string
-	host: string
-	user: string
-	port?: number | undefined
-	password: string
-	database: string
-	tableName?: string | undefined
-	keepAliveIntervalMs?: number | undefined
-	retryRequestDelayMs?: number | undefined
-	maxtRetries?: number | undefined
-	ssl?: string | SslOptions | undefined
-}
-
-export type valueReplacer = {
-	data: Array<number>
-	type: string
-}
-
-export type valueReviver = {
-	data: string
-	type: string
-}
-
-export type KeyPair = {
-	public: Uint8Array
-	private: Uint8Array
-}
-
-export type SignedKeyPair = {
-	keyPair: KeyPair
-	signature: Uint8Array
-	keyId: number
-	timestampS?: number
-}
-
-export type SignalCreds = {
-	readonly signedIdentityKey: KeyPair
-	readonly signedPreKey: SignedKeyPair
-	readonly registrationId: number
-}
-
-export interface Contact {
+type Contact = {
 	id: string
 	lid?: string
 	name?: string
@@ -71,19 +12,79 @@ export interface Contact {
 	status?: string
 }
 
-export type ProtocolAddress = {
+type Account = {
+	details?: Uint8Array | null
+	accountSignatureKey?: Uint8Array | null
+	accountSignature?: Uint8Array | null
+	deviceSignature?: Uint8Array | null
+}
+
+type SignedKeyPair = {
+	keyPair: KeyPair
+	signature: Uint8Array
+	keyId: number
+	timestampS?: number
+}
+
+type ProtocolAddress = {
 	name: string
 	deviceId: number
 }
 
-export type SignalIdentity = {
+type SignalIdentity = {
 	identifier: ProtocolAddress
 	identifierKey: Uint8Array
 }
 
-export type AccountSettings = {
+type LTHashState = {
+	version: number
+	hash: Buffer
+	indexValueMap: {
+		[indexMacBase64: string]: { valueMac: Uint8Array | Buffer }
+	}
+}
+
+type SignalCreds = {
+	readonly signedIdentityKey: KeyPair
+	readonly signedPreKey: SignedKeyPair
+	readonly registrationId: number
+}
+
+type AccountSettings = {
 	unarchiveChats: boolean
-	defaultDisappearingMode?: Pick<proto.IConversation, 'ephemeralExpiration' | 'ephemeralSettingTimestamp'>
+	defaultDisappearingMode?: Pick<any, 'ephemeralExpiration' | 'ephemeralSettingTimestamp'>
+}
+
+type SignalKeyStore = {
+	get<T extends keyof SignalDataTypeMap>(type: T, ids: string[]): Awaitable<{
+		[id: string]: SignalDataTypeMap[T]
+	}>
+	set(data: SignalDataSet): Awaitable<void>
+	clear?(): Awaitable<void>
+}
+
+interface RegistrationOptions {
+	phoneNumber?: string
+	phoneNumberCountryCode: string
+	phoneNumberNationalNumber: string
+	phoneNumberMobileCountryCode: string
+	phoneNumberMobileNetworkCode: string
+	method?: 'sms' | 'voice' | 'captcha'
+	captcha?: string
+}
+
+export type SslOptions = {
+	pfx?: string;
+	key?: string | string[] | Buffer | Buffer[];
+	passphrase?: string;
+	cert?: string | string[] | Buffer | Buffer[];
+	ca?: string | string[] | Buffer | Buffer[];
+	crl?: string | string[];
+	ciphers?: string;
+	rejectUnauthorized?: boolean;
+	minVersion?: string;
+	maxVersion?: string;
+	verifyIdentity?: boolean;
 }
 
 export type Fingerprint = {
@@ -101,15 +102,7 @@ export type Bits = {
 export type AppDataSync = {
 	keyData: Uint8Array
 	fingerprint: Fingerprint
-	timestamp: Long | number
-}
-
-export type LTHashState = {
-	version: number
-	hash: Buffer
-	indexValueMap: {
-		[indexMacBase64: string]: { valueMac: Uint8Array | Buffer }
-	}
+	timestamp: Bits | number
 }
 
 export type SignalDataTypeMap = {
@@ -129,17 +122,51 @@ export type SignalDataSet = {
 	}
 }
 
+export type KeyPair = {
+	public: Uint8Array
+	private: Uint8Array
+}
+
+export type sqlData = {
+	constructor: {
+		name: 'RowDataPacket';
+	};
+	value?: object[]
+}
+
+export interface sqlConnection extends Connection {
+	connection?: {
+		_closing?: boolean
+	}
+}
+
+export type MySQLConfig = {
+	session: string
+	host: string
+	user?: string
+	port?: number
+	password: string
+	database: string
+	tableName?: string
+	keepAliveIntervalMs?: number
+	retryRequestDelayMs?: number
+	maxtRetries?: number
+	ssl?: string | SslOptions
+}
+
+export type valueReplacer = {
+	data: number[]
+	type: string
+}
+
+export type valueReviver = {
+	data: string
+	type: string
+}
+
 export type AuthenticationState = {
 	creds: AuthenticationCreds
 	keys: SignalKeyStore
-}
-
-export type SignalKeyStore = {
-	get<T extends keyof SignalDataTypeMap>(type: T, ids: string[]): Awaitable<{
-		[id: string]: SignalDataTypeMap[T]
-	}>
-	set(data: SignalDataSet): Awaitable<void>
-	clear?(): Awaitable<void>
 }
 
 export type AuthenticationCreds = SignalCreds & {
@@ -147,14 +174,14 @@ export type AuthenticationCreds = SignalCreds & {
 	readonly pairingEphemeralKeyPair: KeyPair
 	advSecretKey: string
 	me?: Contact
-	account?: proto.IADVSignedDeviceIdentity
+	account?: Account
 	signalIdentities?: SignalIdentity[]
 	myAppStateKeyId?: string
 	firstUnuploadedPreKeyId: number
 	nextPreKeyId: number
 	lastAccountSyncTimestamp?: number
 	platform?: string
-	processedHistoryMessages: MinimalMessage[]
+	processedHistoryMessages: Pick<any, 'key' | 'messageTimestamp'>[]
 	accountSyncCounter: number
 	accountSettings: AccountSettings
 	deviceId: string
@@ -163,7 +190,7 @@ export type AuthenticationCreds = SignalCreds & {
 	registered: boolean
 	backupToken: Buffer
 	registration: RegistrationOptions
-	pairingCode?: string
-	lastPropHash?: string
-	routingInfo?: string
+	pairingCode: string | undefined
+	lastPropHash: string | undefined
+	routingInfo: Buffer | undefined
 }
