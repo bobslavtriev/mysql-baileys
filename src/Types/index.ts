@@ -101,7 +101,7 @@ export type Bits = {
 export type AppDataSync = {
 	keyData: Uint8Array
 	fingerprint: Fingerprint
-	timestamp: Bits | number
+	timestamp: Long | number
 }
 
 export type LTHashState = {
