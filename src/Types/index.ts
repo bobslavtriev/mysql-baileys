@@ -165,4 +165,5 @@ export type AuthenticationCreds = SignalCreds & {
 	registration: RegistrationOptions
 	pairingCode?: string
 	lastPropHash?: string
+	routingInfo?: string
 }
