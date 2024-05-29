@@ -1,4 +1,4 @@
-import { proto } from '@whiskeysockets/baileys'
+import { proto } from 'baileys'
 import { Connection } from 'mysql2/promise'
 import type { SslOptions } from 'mysql2/promise'
 
@@ -127,6 +127,11 @@ export type SignalDataSet = {
 	[T in keyof SignalDataTypeMap]?: {
 		[id: string]: SignalDataTypeMap[T] | null
 	}
+}
+
+export type AuthenticationState = {
+	creds: AuthenticationCreds
+	keys: SignalKeyStore
 }
 
 export type SignalKeyStore = {
