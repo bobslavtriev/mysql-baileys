@@ -21,13 +21,13 @@ export type MySQLConfig = {
 	session: string
 	host: string
 	user: string
-	port: number | undefined
+	port?: number | undefined
 	password: string
 	database: string
-	tableName: string | undefined
-	keepAliveIntervalMs: number | undefined
-	retryRequestDelayMs: number | undefined
-	maxtRetries: number | undefined
+	tableName?: string | undefined
+	keepAliveIntervalMs?: number | undefined
+	retryRequestDelayMs?: number | undefined
+	maxtRetries?: number | undefined
 	ssl?: string | SslOptions | undefined
 }
 
