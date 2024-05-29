@@ -1,4 +1,4 @@
-import { proto } from 'baileys'
+import { proto } from '@whiskeysockets/baileys'
 import { Connection } from 'mysql2/promise'
 import type { SslOptions } from 'mysql2/promise'
 
