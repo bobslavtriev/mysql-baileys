@@ -1,7 +1,7 @@
 import { createConnection } from 'mysql2/promise'
 import { proto } from '@whiskeysockets/baileys'
 import { BufferJSON, initAuthCreds } from '../Utils'
-import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds } from '../Types'
+import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds, AuthenticationState } from '../Types'
 
 /**
  * Stores the full authentication state in mysql
@@ -52,7 +52,7 @@ async function connection(config: MySQLConfig, force: true | false = false){
 	return conn
 }
 
-export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: object, saveCreds: () => Promise<void>, clear: () => Promise<void>, removeCreds: () => Promise<void> }> => {
+export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: AuthenticationState, saveCreds: () => Promise<void>, clear: () => Promise<void>, removeCreds: () => Promise<void> }> => {
 	if (typeof config?.session !== 'string'){
 		throw new Error('session name must be a string')
 	}
