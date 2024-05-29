@@ -1,5 +1,5 @@
 import { createConnection } from 'mysql2/promise'
-import { proto } from 'baileys'
+import { proto } from '@whiskeysockets/baileys'
 import { BufferJSON, initAuthCreds } from '../Utils'
 import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds, AuthenticationState } from '../Types'
 
