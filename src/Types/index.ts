@@ -2,6 +2,8 @@ import { proto } from '@whiskeysockets/baileys'
 import { Connection } from 'mysql2/promise'
 import type { SslOptions } from 'mysql2/promise'
 
+export type Awaitable<T> = T | Promise<T>
+
 export type MinimalMessage = Pick<proto.IWebMessageInfo, 'key' | 'messageTimestamp'>
 
 export interface sqlData {
@@ -82,6 +84,57 @@ export type SignalIdentity = {
 export type AccountSettings = {
 	unarchiveChats: boolean
 	defaultDisappearingMode?: Pick<proto.IConversation, 'ephemeralExpiration' | 'ephemeralSettingTimestamp'>
+}
+
+export type Fingerprint = {
+	rawId: number
+	currentIndex: number
+	deviceIndexes: number[]
+}
+
+export type Bits = {
+	low: number
+	high: number
+	unsigned: boolean
+}
+
+export type AppDataSync = {
+	keyData: Uint8Array
+	fingerprint: Fingerprint
+	timestamp: Bits | number
+}
+
+export type LTHashState = {
+	version: number
+	hash: Buffer
+	indexValueMap: {
+		[indexMacBase64: string]: { valueMac: Uint8Array | Buffer }
+	}
+}
+
+export type SignalDataTypeMap = {
+    session: Uint8Array
+    'pre-key': KeyPair
+    'sender-key': Uint8Array
+    'app-state-sync-key': AppDataSync
+    'app-state-sync-version': LTHashState
+    'sender-key-memory': {
+		[jid: string]: boolean
+	}
+}
+
+export type SignalDataSet = {
+	[T in keyof SignalDataTypeMap]?: {
+		[id: string]: SignalDataTypeMap[T] | null
+	}
+}
+
+export type SignalKeyStore = {
+	get<T extends keyof SignalDataTypeMap>(type: T, ids: string[]): Awaitable<{
+		[id: string]: SignalDataTypeMap[T]
+	}>
+	set(data: SignalDataSet): Awaitable<void>
+	clear?(): Awaitable<void>
 }
 
 export type AuthenticationCreds = SignalCreds & {
