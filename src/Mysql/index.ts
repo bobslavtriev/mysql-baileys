@@ -1,5 +1,5 @@
 import { createConnection } from 'mysql2/promise'
-import { proto } from '@whiskeysockets/baileys'
+import { proto } from 'baileys'
 import { BufferJSON, initAuthCreds } from '../Utils'
 import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds, AuthenticationState } from '../Types'
 
@@ -129,7 +129,7 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: Au
 		state: {
 			creds,
 			keys: {
-				get: async (type: string, ids: Array<string>) => {
+				get: async (type, ids) => {
 					const data = { }
 					for(const id of ids){
 						let value = await readData(`${type}-${id}`)
@@ -140,7 +140,7 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: Au
 					}
 					return data
 				},
-				set: async (data: Array<object>) => {
+				set: async (data) => {
 					for(const category in data) {
 						for(const id in data[category]) {
 							const value = data[category][id];
