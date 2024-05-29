@@ -38,7 +38,7 @@
 		"@types/uuid": "^9.0.8",
 		"@typescript-eslint/eslint-plugin": "^6.18.0",
 		"@typescript-eslint/parser": "^6.18.0",
-		"baileys": "github:WhiskeySockets/Baileys",
+		"@whiskeysockets/baileys": "github:WhiskeySockets/Baileys",
 		"conventional-changelog-cli": "^2.2.2",
 		"eslint": "^8.56.0",
 		"release-it": "^15.10.3",
