@@ -93,12 +93,6 @@ export type Fingerprint = {
 	deviceIndexes: number[]
 }
 
-export type Bits = {
-	low: number
-	high: number
-	unsigned: boolean
-}
-
 export type AppDataSync = {
 	keyData: Uint8Array
 	fingerprint: Fingerprint
