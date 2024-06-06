@@ -107,12 +107,7 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: Au
 		await query(`DELETE FROM ${tableName} WHERE session = ?`, [config.session])
 	}
 
-	let creds: AuthenticationCreds = await readData('creds')
-
-	if (!creds){
-		creds = initAuthCreds()
-		await writeData('creds', creds)
-	}
+	const creds: AuthenticationCreds = await readData('creds') || initAuthCreds()
 
 	return {
 		state: {
