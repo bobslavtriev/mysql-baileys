@@ -1,6 +1,6 @@
 import { curve } from 'libsignal'
 import { randomBytes, randomUUID } from 'crypto'
-import { KeyPair, valueReplacer, valueReviver, AppDataSync, Bits } from '../Types'
+import { KeyPair, valueReplacer, valueReviver, AppDataSync, Fingerprint, Bits } from '../Types'
 
 const generateKeyPair = () => {
 	const { pubKey, privKey } = curve.generateKeyPair()
@@ -58,12 +58,17 @@ const parseTimestamp = (timestamp: Bits | number) => {
 }
 
 export const fromObject = (args: AppDataSync) => {
+	const f: Fingerprint = {
+		...args.fingerprint,
+		deviceIndexes: Array.isArray(args.fingerprint.deviceIndexes) ? args.fingerprint.deviceIndexes : []
+	}
+
 	const message = {
 		keyData: Array.isArray(args.keyData) ? args.keyData : new Uint8Array(),
 		fingerprint: {
-			rawId: args.fingerprint.rawId,
-			currentIndex: args.fingerprint.rawId,
-			deviceIndexes: Array.isArray(args.fingerprint.deviceIndexes) ? args.fingerprint.deviceIndexes : []
+			rawId: f.rawId || 0,
+			currentIndex: f.rawId || 0,
+			deviceIndexes: f.deviceIndexes
 		},
 		timestamp: parseTimestamp(args.timestamp)
 	}
@@ -114,9 +119,9 @@ export const initAuthCreds = () => {
 		identityId: randomBytes(20),
 		backupToken: randomBytes(20),
 		registered: false,
-		registration: {},
+		registration: {} as never,
 		pairingCode: undefined,
 		lastPropHash: undefined,
-        routingInfo: undefined
+		routingInfo: undefined
 	}
 }
