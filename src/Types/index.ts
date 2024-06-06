@@ -74,17 +74,17 @@ interface RegistrationOptions {
 }
 
 export type SslOptions = {
-	pfx?: string;
-	key?: string | string[] | Buffer | Buffer[];
-	passphrase?: string;
-	cert?: string | string[] | Buffer | Buffer[];
-	ca?: string | string[] | Buffer | Buffer[];
-	crl?: string | string[];
-	ciphers?: string;
-	rejectUnauthorized?: boolean;
-	minVersion?: string;
-	maxVersion?: string;
-	verifyIdentity?: boolean;
+	pfx?: string
+	key?: string | string[] | Buffer | Buffer[]
+	passphrase?: string
+	cert?: string | string[] | Buffer | Buffer[]
+	ca?: string | string[] | Buffer | Buffer[]
+	crl?: string | string[]
+	ciphers?: string
+	rejectUnauthorized?: boolean
+	minVersion?: string
+	maxVersion?: string
+	verifyIdentity?: boolean
 }
 
 export type Fingerprint = {
@@ -102,16 +102,16 @@ export type Bits = {
 export type AppDataSync = {
 	keyData: Uint8Array
 	fingerprint: Fingerprint
-	timestamp: Long | number
+	timestamp: Bits | number
 }
 
 export type SignalDataTypeMap = {
-    session: Uint8Array
-    'pre-key': KeyPair
-    'sender-key': Uint8Array
-    'app-state-sync-key': AppDataSync
-    'app-state-sync-version': LTHashState
-    'sender-key-memory': {
+	session: Uint8Array
+	'pre-key': KeyPair
+	'sender-key': Uint8Array
+	'app-state-sync-key': AppDataSync
+	'app-state-sync-version': LTHashState
+	'sender-key-memory': {
 		[jid: string]: boolean
 	}
 }
@@ -129,8 +129,8 @@ export type KeyPair = {
 
 export type sqlData = {
 	constructor: {
-		name: 'RowDataPacket';
-	};
+		name: 'RowDataPacket'
+	}
 	value?: object[]
 }
 
@@ -148,16 +148,16 @@ export type MySQLConfig = {
 	tableName?: string
 	user?: string
 	password?: string
-    password1?: string
-    password2?: string
-    password3?: string
+	password1?: string
+	password2?: string
+	password3?: string
 	retryRequestDelayMs?: number
 	maxtRetries?: number
 	ssl?: string | SslOptions
-    localAddress?: string;
-    socketPath?: string;
-    insecureAuth?: boolean
-    isServer?: boolean
+	localAddress?: string
+	socketPath?: string
+	insecureAuth?: boolean
+	isServer?: boolean
 }
 
 export type valueReplacer = {
