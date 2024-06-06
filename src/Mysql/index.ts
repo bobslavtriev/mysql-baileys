@@ -12,8 +12,8 @@ import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds, Authenticatio
  * @param {string} password1 - Alias for the MySQL user password. Makes a bit more sense in a multifactor authentication setup (see "password2" and "password3")
  * @param {string} password2 - 2nd factor authentication password. Mandatory when the authentication policy for the MySQL user account requires an additional authentication method that needs a password.
  * @param {string} password3 - 3rd factor authentication password. Mandatory when the authentication policy for the MySQL user account requires two additional authentication methods and the last one needs a password.
- * @param {string} database - Name of the database to use for this connection. (Default: auth)
- * @param {string} tableName - MySql table name, by default auth.
+ * @param {string} database - Name of the database to use for this connection. (Default: base)
+ * @param {string} tableName - MySql table name. (Default: auth)
  * @param {string} retryRequestDelayMs - Retry the query at each interval if it fails. (Default: 200ms)
  * @param {string} maxtRetries - Maximum attempts if the query fails. (Default: 10)
  * @param {string} session - Session name to identify the connection, allowing multisessions with mysql.
@@ -52,7 +52,7 @@ async function connection(config: MySQLConfig, force: boolean = false){
 		})
 
 		if (newConnection) {
-			await conn.execute('CREATE TABLE IF NOT EXISTS `' + config.tableName + '` (`session` varchar(50) NOT NULL, `id` varchar(80) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM;')
+			await conn.execute('CREATE TABLE IF NOT EXISTS `' + config.tableName || 'auth' + '` (`session` varchar(50) NOT NULL, `id` varchar(80) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM')
 		}
 
 		pending = false
