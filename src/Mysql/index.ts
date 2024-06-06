@@ -92,7 +92,7 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: Au
 
 	const writeData = async (id: string, value: object) => {
 		const valueFixed = JSON.stringify(value, BufferJSON.replacer)
-		await query(`INSERT INTO ${tableName} (session, id, value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?`, [id, config.session, valueFixed, valueFixed])
+		await query(`INSERT INTO ${tableName} (session, id, value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?`, [config.session, id, valueFixed, valueFixed])
 	}
 
 	const removeData = async (id: string) => {
