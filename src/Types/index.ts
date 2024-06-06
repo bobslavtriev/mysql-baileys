@@ -65,10 +65,10 @@ type SignalKeyStore = {
 
 interface RegistrationOptions {
 	phoneNumber?: string
-	phoneNumberCountryCode: string
-	phoneNumberNationalNumber: string
-	phoneNumberMobileCountryCode: string
-	phoneNumberMobileNetworkCode: string
+	phoneNumberCountryCode?: string
+	phoneNumberNationalNumber?: string
+	phoneNumberMobileCountryCode?: string
+	phoneNumberMobileNetworkCode?: string
 	method?: 'sms' | 'voice' | 'captcha'
 	captcha?: string
 }
@@ -106,12 +106,12 @@ export type AppDataSync = {
 }
 
 export type SignalDataTypeMap = {
-    session: Uint8Array
-    'pre-key': KeyPair
-    'sender-key': Uint8Array
-    'app-state-sync-key': AppDataSync
-    'app-state-sync-version': LTHashState
-    'sender-key-memory': {
+	session: Uint8Array
+	'pre-key': KeyPair
+	'sender-key': Uint8Array
+	'app-state-sync-key': AppDataSync
+	'app-state-sync-version': LTHashState
+	'sender-key-memory': {
 		[jid: string]: boolean
 	}
 }
@@ -143,15 +143,21 @@ export interface sqlConnection extends Connection {
 export type MySQLConfig = {
 	session: string
 	host: string
-	user?: string
 	port?: number
-	password: string
 	database: string
 	tableName?: string
-	keepAliveIntervalMs?: number
+	user?: string
+	password?: string
+	password1?: string
+	password2?: string
+	password3?: string
 	retryRequestDelayMs?: number
 	maxtRetries?: number
 	ssl?: string | SslOptions
+	localAddress?: string;
+	socketPath?: string;
+	insecureAuth?: boolean
+	isServer?: boolean
 }
 
 export type valueReplacer = {
