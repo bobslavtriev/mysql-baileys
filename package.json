@@ -1,7 +1,7 @@
 {
 	"author": "bobslavtriev",
 	"name": "mysql-baileys",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"description": "Implementation of MySQL in Baileys.",
@@ -29,8 +29,7 @@
 	},
 	"dependencies": {
 		"libsignal": "github:adiwajshing/libsignal-node",
-		"mysql2": "^3.3.5",
-		"uuid": "^9.0.0"
+		"mysql2": "^3.3.5"
 	},
 	"devDependencies": {
 		"@adiwajshing/eslint-config": "github:adiwajshing/eslint-config",
