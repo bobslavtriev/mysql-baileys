@@ -142,7 +142,7 @@ export interface sqlConnection extends Connection {
 
 export type MySQLConfig = {
 	session: string
-	host: string
+	host?: string
 	port?: number
 	database: string
 	tableName?: string
