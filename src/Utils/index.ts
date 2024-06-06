@@ -41,7 +41,7 @@ const allocate = (str: string) => {
 	return new Uint8Array(Math.ceil(str.length * 3) / 4 - n).fill(0)
 }
 
-const parseTimestamp = (timestamp: Bits | number) => {
+const parseTimestamp = (timestamp: string | number | Long) => {
 	if (typeof timestamp === 'string') {
 		return parseInt(timestamp, 10)
 	}
@@ -50,11 +50,7 @@ const parseTimestamp = (timestamp: Bits | number) => {
 		return timestamp
 	}
 
-	return {
-		low: 0,
-		high: 0,
-		unsigned: false
-	}
+	return timestamp
 }
 
 export const fromObject = (args: AppDataSync) => {
