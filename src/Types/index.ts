@@ -65,10 +65,10 @@ type SignalKeyStore = {
 
 interface RegistrationOptions {
 	phoneNumber?: string
-	phoneNumberCountryCode?: string
-	phoneNumberNationalNumber?: string
-	phoneNumberMobileCountryCode?: string
-	phoneNumberMobileNetworkCode?: string
+	phoneNumberCountryCode: string
+	phoneNumberNationalNumber: string
+	phoneNumberMobileCountryCode: string
+	phoneNumberMobileNetworkCode: string
 	method?: 'sms' | 'voice' | 'captcha'
 	captcha?: string
 }
@@ -102,16 +102,16 @@ export type Bits = {
 export type AppDataSync = {
 	keyData: Uint8Array
 	fingerprint: Fingerprint
-	timestamp: Bits | number
+	timestamp: Long | number
 }
 
 export type SignalDataTypeMap = {
-	session: Uint8Array
-	'pre-key': KeyPair
-	'sender-key': Uint8Array
-	'app-state-sync-key': AppDataSync
-	'app-state-sync-version': LTHashState
-	'sender-key-memory': {
+    session: Uint8Array
+    'pre-key': KeyPair
+    'sender-key': Uint8Array
+    'app-state-sync-key': AppDataSync
+    'app-state-sync-version': LTHashState
+    'sender-key-memory': {
 		[jid: string]: boolean
 	}
 }
@@ -148,16 +148,16 @@ export type MySQLConfig = {
 	tableName?: string
 	user?: string
 	password?: string
-	password1?: string
-	password2?: string
-	password3?: string
+    password1?: string
+    password2?: string
+    password3?: string
 	retryRequestDelayMs?: number
 	maxtRetries?: number
 	ssl?: string | SslOptions
-	localAddress?: string;
-	socketPath?: string;
-	insecureAuth?: boolean
-	isServer?: boolean
+    localAddress?: string;
+    socketPath?: string;
+    insecureAuth?: boolean
+    isServer?: boolean
 }
 
 export type valueReplacer = {
