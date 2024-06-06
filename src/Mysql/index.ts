@@ -1,6 +1,6 @@
 import { createConnection } from 'mysql2/promise'
-import { BufferJSON, initAuthCreds, fromObject } from '../Utils/utils_beta'
-import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds, AuthenticationState, SignalDataTypeMap } from '../Types/types_beta'
+import { BufferJSON, initAuthCreds, fromObject } from '../Utils'
+import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds, AuthenticationState, SignalDataTypeMap } from '../Types'
 
 /**
  * Stores the full authentication state in mysql
