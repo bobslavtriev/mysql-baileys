@@ -24,15 +24,12 @@ import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds, Authenticatio
  */
 
 let conn: sqlConnection
-let pending: boolean = false
 
 async function connection(config: MySQLConfig, force: boolean = false){
 	const ended = !!conn?.connection?._closing
 	const newConnection = conn === undefined
 
 	if (newConnection || ended || force){
-		pending = true
-
 		conn = await createConnection({
 			database: config.database || 'base',
 			host: config.host || 'localhost',
@@ -54,8 +51,6 @@ async function connection(config: MySQLConfig, force: boolean = false){
 		if (newConnection) {
 			await conn.execute('CREATE TABLE IF NOT EXISTS `' + config.tableName + '` (`session` varchar(50) NOT NULL, `id` varchar(80) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM;')
 		}
-
-		pending = false
 	}
 
 	return conn
