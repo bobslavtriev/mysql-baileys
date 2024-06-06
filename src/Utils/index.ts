@@ -1,7 +1,6 @@
 import { curve } from 'libsignal'
-import { randomBytes } from 'crypto'
-import { v4 } from 'uuid'
-import { KeyPair, valueReplacer, valueReviver } from '../Types'
+import { randomBytes, randomUUID } from 'crypto'
+import { KeyPair, valueReplacer, valueReviver, AppDataSync, Fingerprint } from '../Types'
 
 const generateKeyPair = () => {
 	const { pubKey, privKey } = curve.generateKeyPair()
@@ -24,6 +23,57 @@ const signedKeyPair = (identityKeyPair: KeyPair, keyId: number) => {
 	const pubKey = generateSignalPubKey(preKey.public)
 	const signature = sign(identityKeyPair.private, pubKey)
 	return { keyPair: preKey, signature, keyId }
+}
+
+const allocate = (str: string) => {
+	let p = str.length
+
+	if (!p){
+		return new Uint8Array(1)
+	}
+
+	let n = 0
+
+	while (--p % 4 > 1 && str.charAt(p) === "="){
+		++n
+	}
+
+	return new Uint8Array(Math.ceil(str.length * 3) / 4 - n).fill(0)
+}
+
+const parseTimestamp = (timestamp: string | number | Long) => {
+	if (typeof timestamp === 'string') {
+		return parseInt(timestamp, 10)
+	}
+
+	if (typeof timestamp === "number") {
+		return timestamp
+	}
+
+	return timestamp
+}
+
+export const fromObject = (args: AppDataSync) => {
+	const f: Fingerprint = {
+		...args.fingerprint,
+		deviceIndexes: Array.isArray(args.fingerprint.deviceIndexes) ? args.fingerprint.deviceIndexes : []
+	}
+
+	const message = {
+		keyData: Array.isArray(args.keyData) ? args.keyData : new Uint8Array(),
+		fingerprint: {
+			rawId: f.rawId || 0,
+			currentIndex: f.rawId || 0,
+			deviceIndexes: f.deviceIndexes
+		},
+		timestamp: parseTimestamp(args.timestamp)
+	}
+
+	if (typeof args.keyData === "string") {
+		message.keyData = allocate(args.keyData)
+	}
+
+	return message
 }
 
 export const BufferJSON = {
@@ -60,13 +110,14 @@ export const initAuthCreds = () => {
 		accountSettings: {
 			unarchiveChats: false
 		},
-		deviceId: Buffer.from(v4().replace(/-/g, ''), 'hex').toString('base64url'),
-		phoneId: v4(),
+		deviceId: Buffer.from(randomUUID().replace(/-/g, ''), 'hex').toString('base64url'),
+		phoneId: randomUUID(),
 		identityId: randomBytes(20),
 		backupToken: randomBytes(20),
 		registered: false,
-		registration: {},
+		registration: {} as never,
 		pairingCode: undefined,
-		lastPropHash: undefined
+		lastPropHash: undefined,
+		routingInfo: undefined
 	}
 }

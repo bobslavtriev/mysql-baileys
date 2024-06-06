@@ -74,17 +74,17 @@ interface RegistrationOptions {
 }
 
 export type SslOptions = {
-	pfx?: string;
-	key?: string | string[] | Buffer | Buffer[];
-	passphrase?: string;
-	cert?: string | string[] | Buffer | Buffer[];
-	ca?: string | string[] | Buffer | Buffer[];
-	crl?: string | string[];
-	ciphers?: string;
-	rejectUnauthorized?: boolean;
-	minVersion?: string;
-	maxVersion?: string;
-	verifyIdentity?: boolean;
+	pfx?: string
+	key?: string | string[] | Buffer | Buffer[]
+	passphrase?: string
+	cert?: string | string[] | Buffer | Buffer[]
+	ca?: string | string[] | Buffer | Buffer[]
+	crl?: string | string[]
+	ciphers?: string
+	rejectUnauthorized?: boolean
+	minVersion?: string
+	maxVersion?: string
+	verifyIdentity?: boolean
 }
 
 export type Fingerprint = {
@@ -93,25 +93,19 @@ export type Fingerprint = {
 	deviceIndexes: number[]
 }
 
-export type Bits = {
-	low: number
-	high: number
-	unsigned: boolean
-}
-
 export type AppDataSync = {
 	keyData: Uint8Array
 	fingerprint: Fingerprint
-	timestamp: Bits | number
+	timestamp: Long | number
 }
 
 export type SignalDataTypeMap = {
-    session: Uint8Array
-    'pre-key': KeyPair
-    'sender-key': Uint8Array
-    'app-state-sync-key': AppDataSync
-    'app-state-sync-version': LTHashState
-    'sender-key-memory': {
+	session: Uint8Array
+	'pre-key': KeyPair
+	'sender-key': Uint8Array
+	'app-state-sync-key': AppDataSync
+	'app-state-sync-version': LTHashState
+	'sender-key-memory': {
 		[jid: string]: boolean
 	}
 }
@@ -129,8 +123,8 @@ export type KeyPair = {
 
 export type sqlData = {
 	constructor: {
-		name: 'RowDataPacket';
-	};
+		name: 'RowDataPacket'
+	}
 	value?: object[]
 }
 
@@ -141,16 +135,39 @@ export interface sqlConnection extends Connection {
 }
 
 export type MySQLConfig = {
-	session: string
-	host: string
-	user?: string
-	port?: number
-	password: string
-	database: string
-	tableName?: string
-	keepAliveIntervalMs?: number
-	retryRequestDelayMs?: number
-	maxtRetries?: number
+	/* The hostname of the database you are connecting to. (Default: localhost) */
+	host?: string,
+	/* The port number to connect to. (Default: 3306) */
+	port?: number,
+	/* The MySQL user to authenticate as. (Default: root) */
+	user?: string,
+	/* The password of that MySQL user */
+	password: string,
+	/* Alias for the MySQL user password. Makes a bit more sense in a multifactor authentication setup (see "password2" and "password3") */
+	password1?: string,
+	/* 2nd factor authentication password. Mandatory when the authentication policy for the MySQL user account requires an additional authentication method that needs a password. */
+	password2?: string,
+	/* 3rd factor authentication password. Mandatory when the authentication policy for the MySQL user account requires two additional authentication methods and the last one needs a password. */
+	password3?: string,
+	/* Name of the database to use for this connection. (Default: base) */
+	database: string,
+	/* MySql table name. (Default: auth) */
+	tableName?: string,
+	/* Retry the query at each interval if it fails. (Default: 200ms) */
+	retryRequestDelayMs?: number,
+	/* Maximum attempts if the query fails. (Default: 10) */
+	maxtRetries?: number,
+	/* Session name to identify the connection, allowing multisessions with mysql. */
+	session: string,
+	/* The source IP address to use for TCP connection. */
+	localAddress?: string,
+	/* The path to a unix domain socket to connect to. When used host and port are ignored. */
+	socketPath?: string,
+	/* Allow connecting to MySQL instances that ask for the old (insecure) authentication method. (Default: false) */
+	insecureAuth?: boolean,
+	/* If your connection is a server. (Default: false) */
+	isServer?: boolean,
+	/* Use the config SSL. (Default: disabled) */
 	ssl?: string | SslOptions
 }
 

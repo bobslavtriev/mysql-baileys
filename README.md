@@ -39,40 +39,48 @@ const { useMySQLAuthState } = require('mysql-baileys')
 ```ts
 const { state, saveCreds, removeCreds } = await useMySQLAuthState({
 	session: sessionName, // required
-	host: 'localhost', // optional
-	port: 3306, // optional
-	user: 'root', // optional
 	password: 'Password123#', // required
 	database: 'baileys', // required
-	tableName: 'auth' // optional
 })
 ```
 
 ### 5. All parameters for useMySQLAuthState()
 ```ts
 type MySQLConfig = {
-	/* Session name to identify the connection, allowing multisessions with mysql */
-	session: string
-	/* MySql host, by default localhost */
-	host: string
-	/* MySql port, by default 3306 */
-	port: number | undefined
-	/* MySql user, by default root */
-	user: string
-	/* MySql password */
-	password: string
-	/* MySql database name */
-	database: string
-	/* MySql table name, by default auth */
-	tableName: string | undefined
-	/* Always keep active, by default 30s */
-	keepAliveIntervalMs: number | undefined
-	/* Retry the query at each interval if it fails, by default 200ms */
-	retryRequestDelayMs: number | undefined
-	/* Maximum attempts if the query fails, by default 10 */
-	maxtRetries: number | undefined
-	/* MySql SSL config */
-	ssl?: string | SslOptions | undefined
+	/* The hostname of the database you are connecting to. (Default: localhost) */
+	host?: string,
+	/* The port number to connect to. (Default: 3306) */
+	port?: number,
+	/* The MySQL user to authenticate as. (Default: root) */
+	user?: string,
+	/* The password of that MySQL user */
+	password: string,
+	/* Alias for the MySQL user password. Makes a bit more sense in a multifactor authentication setup (see "password2" and "password3") */
+	password1?: string,
+	/* 2nd factor authentication password. Mandatory when the authentication policy for the MySQL user account requires an additional authentication method that needs a password. */
+	password2?: string,
+	/* 3rd factor authentication password. Mandatory when the authentication policy for the MySQL user account requires two additional authentication methods and the last one needs a password. */
+	password3?: string,
+	/* Name of the database to use for this connection. (Default: base) */
+	database: string,
+	/* MySql table name. (Default: auth) */
+	tableName?: string,
+	/* Retry the query at each interval if it fails. (Default: 200ms) */
+	retryRequestDelayMs: number,
+	/* Maximum attempts if the query fails. (Default: 10) */
+	maxtRetries?: number,
+	/* Session name to identify the connection, allowing multisessions with mysql. */
+	session: string,
+	/* The source IP address to use for TCP connection. */
+	localAddress?: string,
+	/* The path to a unix domain socket to connect to. When used host and port are ignored. */
+	socketPath?: string,
+	/* Allow connecting to MySQL instances that ask for the old (insecure) authentication method. (Default: false) */
+	insecureAuth?: boolean,
+	/* If your connection is a server. (Default: false) */
+	isServer?: boolean,
+	/* Use the config SSL. (Default: disabled) */
+	ssl?: string | SslOptions
 }
 ```
 
@@ -90,13 +98,13 @@ async function startSock(sessionName){
 	}
 
 	const { state, saveCreds, removeCreds } = await useMySQLAuthState({
-		session: sessionName, // required
-		host: 'localhost', // optional
-		port: 3306, // optional
-		user: 'root', // optional
-		password: 'Password123#', // required
-		database: 'baileys', // required
-		tableName: 'auth' // optional
+		session: sessionName,
+		host: 'localhost',
+		port: 3306,
+		user: 'bob',
+		password: 'Password123#',
+		database: 'baileys',
+		tableName: 'auth'
 	})
 
 	const sock = makeWASocket({
