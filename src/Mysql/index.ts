@@ -6,21 +6,21 @@ import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds, Authenticatio
  * Stores the full authentication state in mysql
  * Far more efficient than file
  * @param {string} host - The hostname of the database you are connecting to. (Default: localhost)
- * @param {string} port - The port number to connect to. (Default: 3306)
+ * @param {number} port - The port number to connect to. (Default: 3306)
  * @param {string} user - The MySQL user to authenticate as. (Default: root)
  * @param {string} password - The password of that MySQL user
  * @param {string} password1 - Alias for the MySQL user password. Makes a bit more sense in a multifactor authentication setup (see "password2" and "password3")
  * @param {string} password2 - 2nd factor authentication password. Mandatory when the authentication policy for the MySQL user account requires an additional authentication method that needs a password.
  * @param {string} password3 - 3rd factor authentication password. Mandatory when the authentication policy for the MySQL user account requires two additional authentication methods and the last one needs a password.
- * @param {string} database - Name of the database to use for this connection. (Default: auth)
- * @param {string} tableName - MySql table name, by default auth.
- * @param {string} retryRequestDelayMs - Retry the query at each interval if it fails. (Default: 200ms)
- * @param {string} maxtRetries - Maximum attempts if the query fails. (Default: 10)
+ * @param {string} database - Name of the database to use for this connection. (Default: base)
+ * @param {string} tableName - MySql table name. (Default: auth)
+ * @param {number} retryRequestDelayMs - Retry the query at each interval if it fails. (Default: 200ms)
+ * @param {number} maxtRetries - Maximum attempts if the query fails. (Default: 10)
  * @param {string} session - Session name to identify the connection, allowing multisessions with mysql.
  * @param {string} localAddress - The source IP address to use for TCP connection.
  * @param {string} socketPath - The path to a unix domain socket to connect to. When used host and port are ignored.
- * @param {string} insecureAuth - Allow connecting to MySQL instances that ask for the old (insecure) authentication method. (Default: false)
- * @param {string} isServer - If your connection is a server. (Default: false)
+ * @param {boolean} insecureAuth - Allow connecting to MySQL instances that ask for the old (insecure) authentication method. (Default: false)
+ * @param {boolean} isServer - If your connection is a server. (Default: false)
  */
 
 let conn: sqlConnection
