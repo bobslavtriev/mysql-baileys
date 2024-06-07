@@ -65,7 +65,6 @@ jobs:
           tag: nightly
           commitish: ${{ github.sha }}
           name: Nightly Release
-          body: ${{ steps.generate_changelog.outputs.changelog }}
           draft: false
           prerelease: true
           files: >
