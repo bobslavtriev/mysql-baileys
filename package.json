@@ -1,7 +1,7 @@
 {
 	"author": "bobslavtriev",
 	"name": "mysql-baileys",
-	"version": "1.5.0",
+	"version": "1.5.1",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"description": "Implementation of MySQL in Baileys.",
@@ -19,10 +19,7 @@
 		"build:docs": "typedoc",
 		"build:all": "tsc && typedoc",
 		"lint": "eslint src --ext .ts",
-		"lint:fix": "eslint src --fix --ext .ts",
-		"changelog:last": "conventional-changelog -p angular -r 2",
-		"changelog:preview": "conventional-changelog -p angular -u",
-		"changelog:update": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
+		"lint:fix": "eslint src --fix --ext .ts"
 	},
 	"repository": {
 		"url": "git+ssh://git@github.com/bobslavtriev/mysql-baileys.git"
@@ -38,7 +35,6 @@
 		"@typescript-eslint/eslint-plugin": "^6.18.0",
 		"@typescript-eslint/parser": "^6.18.0",
 		"@whiskeysockets/baileys": "^6.6.0",
-		"conventional-changelog-cli": "^2.2.2",
 		"eslint": "^8.56.0",
 		"release-it": "^15.10.3",
 		"typedoc": "^0.24.7",
