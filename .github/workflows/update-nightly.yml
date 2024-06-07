@@ -49,14 +49,6 @@ jobs:
       - name: Build NPM package
         run: yarn pack && mv *.tgz mysql-baileys-nightly.tgz
 
-      - name: Generate Changelog
-        id: generate_changelog
-        run: |
-          changelog=$(yarn run --silent changelog:preview)
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          echo "${changelog}" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
       - name: Update Nightly TAG
         uses: richardsimko/update-tag@v1.0.11
         env:
