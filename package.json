@@ -25,7 +25,7 @@
 		"url": "git+ssh://git@github.com/bobslavtriev/mysql-baileys.git"
 	},
 	"dependencies": {
-		"libsignal": "github:adiwajshing/libsignal-node",
+		"libsignal": "github:WhiskeySockets/libsignal-node",
 		"mysql2": "^3.3.5"
 	},
 	"devDependencies": {
