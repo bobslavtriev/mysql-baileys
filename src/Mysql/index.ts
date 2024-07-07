@@ -49,7 +49,7 @@ async function connection(config: MySQLConfig, force: boolean = false){
 		})
 
 		if (newConnection) {
-			await conn.execute('CREATE TABLE IF NOT EXISTS `' + config.tableName + '` (`session` varchar(50) NOT NULL, `id` varchar(80) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM;')
+			await conn.execute('CREATE TABLE IF NOT EXISTS `' + (config.tableName || 'auth') + '` (`session` varchar(50) NOT NULL, `id` varchar(80) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM;')
 		}
 	}
 
