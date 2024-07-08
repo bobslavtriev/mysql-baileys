@@ -142,6 +142,9 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: Au
 		},
 		removeCreds: async () => {
 			await removeAll()
+		},
+		query: async (sql, values) => {
+			return await query(sql, values)
 		}
 	}
 }
