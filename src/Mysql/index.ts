@@ -25,11 +25,11 @@ import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds, Authenticatio
 
 let conn: sqlConnection
 
-async function connection(config: MySQLConfig, force: boolean = false){
+async function connection(config: MySQLConfig, force: boolean = false) {
 	const ended = !!conn?.connection?._closing
 	const newConnection = conn === undefined
 
-	if (newConnection || ended || force){
+	if (newConnection || ended || force) {
 		conn = await createConnection({
 			database: config.database || 'base',
 			host: config.host || 'localhost',
@@ -55,20 +55,20 @@ async function connection(config: MySQLConfig, force: boolean = false){
 
 	return conn
 }
-
-export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: AuthenticationState, saveCreds: () => Promise<void>, clear: () => Promise<void>, removeCreds: () => Promise<void>, query: (sql: string, values: string[]) => Promise<sqlData> }> => {
+const KEY_MAP: { [key: string]: string } = {
+	'pre-key': 'preKeys',
+}
+export const useMySQLAuthState = async (config: MySQLConfig): Promise<{ state: AuthenticationState, saveCreds: () => Promise<void>, clear: () => Promise<void>, removeCreds: () => Promise<void>, query: (sql: string, values: string[]) => Promise<sqlData> }> => {
 	const sqlConn = await connection(config)
-
 	const tableName = config.tableName || 'auth'
 	const retryRequestDelayMs = config.retryRequestDelayMs || 200
 	const maxtRetries = config.maxtRetries || 10
-
 	const query = async (sql: string, values: string[]) => {
-		for (let x = 0; x < maxtRetries; x++){
+		for (let x = 0; x < maxtRetries; x++) {
 			try {
 				const [rows] = await sqlConn.query(sql, values)
 				return rows as sqlData
-			} catch(e){
+			} catch (e) {
 				await new Promise(r => setTimeout(r, retryRequestDelayMs))
 			}
 		}
@@ -77,16 +77,21 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: Au
 
 	const readData = async (id: string) => {
 		const data = await query(`SELECT value FROM ${tableName} WHERE id = ? AND session = ?`, [id, config.session])
-		if(!data[0]?.value){
+		if (!data[0]?.value) {
 			return null
 		}
 		const creds = typeof data[0].value === 'object' ? JSON.stringify(data[0].value) : data[0].value
 		const credsParsed = JSON.parse(creds, BufferJSON.reviver)
 		return credsParsed
 	}
-
-	const writeData = async (id: string, value: object) => {
-		const valueFixed = JSON.stringify(value, BufferJSON.replacer)
+	let creds: AuthenticationCreds
+	let keys: { [key: string]: any } = {}
+		; ({ creds, keys } = (await readData('creds')) || {
+			creds: initAuthCreds(),
+			keys: {},
+		})
+	const writeData = async (id: string) => {
+		const valueFixed = JSON.stringify({ creds, keys }, BufferJSON.replacer)
 		await query(`INSERT INTO ${tableName} (session, id, value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?`, [config.session, id, valueFixed, valueFixed])
 	}
 
@@ -102,40 +107,37 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: Au
 		await query(`DELETE FROM ${tableName} WHERE session = ?`, [config.session])
 	}
 
-	const creds: AuthenticationCreds = await readData('creds') || initAuthCreds()
 
 	return {
 		state: {
 			creds: creds,
 			keys: {
 				get: async (type, ids) => {
-					const data: { [id: string]: SignalDataTypeMap[typeof type] } = { }
-					for(const id of ids){
-						let value = await readData(`${type}-${id}`)
-						if (type === 'app-state-sync-key' && value){
-							value = fromObject(value)
+					const key = KEY_MAP[type]
+					return ids.reduce((dict, id) => {
+						let value = keys[key]?.[id]
+						if (value) {
+							if (type == 'app-state-sync-key')
+								value = fromObject(value)
+							dict[id] = value
 						}
-						data[id] = value
-					}
-					return data
+						return dict
+					}, {})
 				},
 				set: async (data) => {
-					for(const category in data) {
-						for(const id in data[category]) {
-							const value = data[category][id]
-							const name = `${category}-${id}`
-							if (value){
-								await writeData(name, value)
-							} else {
-								await removeData(name)
-							}
+					for (const _key in data) {
+						if (_key == 'pre-key') {
+							const key = KEY_MAP[_key]
+							keys[key] = keys[key] || {}
+							Object.assign(keys[key], data[_key])
 						}
 					}
+					await writeData("creds")
 				}
 			}
 		},
 		saveCreds: async () => {
-			await writeData('creds', creds)
+			await writeData('creds')
 		},
 		clear: async () => {
 			await clearAll()

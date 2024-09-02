@@ -108,10 +108,7 @@ async function startSock(sessionName){
 	})
 
 	const sock = makeWASocket({
-		auth: {
-			creds: state.creds,
-			keys: makeCacheableSignalKeyStore(state.keys, logger),
-		},
+		auth: state,
 		version: version,
 		defaultQueryTimeoutMs: undefined
 	})
