@@ -1,7 +1,7 @@
 {
 	"author": "bobslavtriev",
 	"name": "mysql-baileys",
-	"version": "1.5.1",
+	"version": "1.5.2",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"description": "Implementation of MySQL in Baileys.",
