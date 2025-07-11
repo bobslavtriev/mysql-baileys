@@ -1,7 +1,7 @@
 {
 	"author": "bobslavtriev",
 	"name": "mysql-baileys",
-	"version": "1.5.2",
+	"version": "1.5.3",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"description": "Implementation of MySQL in Baileys.",
@@ -22,19 +22,19 @@
 		"lint:fix": "eslint src --fix --ext .ts"
 	},
 	"repository": {
-		"url": "git+ssh://git@github.com/bobslavtriev/mysql-baileys.git"
+		"type": "git",
+		"url": "https://github.com/bobslavtriev/mysql-baileys.git"
 	},
 	"dependencies": {
-		"libsignal": "github:adiwajshing/libsignal-node",
-		"mysql2": "^3.3.5"
+		"libsignal": "https://github.com/WhiskeySockets/libsignal-node.git",
+		"mysql2": "^3.10.1"
 	},
 	"devDependencies": {
-		"@adiwajshing/eslint-config": "github:adiwajshing/eslint-config",
+		"@adiwajshing/eslint-config": "https://github.com/adiwajshing/eslint-config.git",
 		"@types/node": "^16.18.69",
 		"@types/uuid": "^9.0.8",
 		"@typescript-eslint/eslint-plugin": "^6.18.0",
 		"@typescript-eslint/parser": "^6.18.0",
-		"@whiskeysockets/baileys": "github:WhiskeySockets/Baileys",
 		"eslint": "^8.56.0",
 		"release-it": "^15.10.3",
 		"typedoc": "^0.24.7",
