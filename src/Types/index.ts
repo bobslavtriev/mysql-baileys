@@ -64,16 +64,6 @@ type SignalKeyStore = {
 	clear?(): Awaitable<void>
 }
 
-interface RegistrationOptions {
-	phoneNumber?: string
-	phoneNumberCountryCode: string
-	phoneNumberNationalNumber: string
-	phoneNumberMobileCountryCode: string
-	phoneNumberMobileNetworkCode: string
-	method?: 'sms' | 'voice' | 'captcha'
-	captcha?: string
-}
-
 export type SslOptions = {
 	pfx?: string
 	key?: string | string[] | Buffer | Buffer[]
