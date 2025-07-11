@@ -5,6 +5,7 @@ type Awaitable<T> = T | Promise<T>
 type Contact = {
 	id: string
 	lid?: string
+	jid?: string
 	name?: string
 	notify?: string
 	verifiedName?: string
@@ -136,49 +137,46 @@ export interface sqlConnection extends Connection {
 
 export type MySQLConfig = {
 	/* The hostname of the database you are connecting to. (Default: localhost) */
-	host?: string,
+	host?: string
 	/* The port number to connect to. (Default: 3306) */
-	port?: number,
+	port?: number
 	/* The MySQL user to authenticate as. (Default: root) */
-	user?: string,
+	user?: string
 	/* The password of that MySQL user */
-	password: string,
+	password: string
 	/* Alias for the MySQL user password. Makes a bit more sense in a multifactor authentication setup (see "password2" and "password3") */
-	password1?: string,
+	password1?: string
 	/* 2nd factor authentication password. Mandatory when the authentication policy for the MySQL user account requires an additional authentication method that needs a password. */
-	password2?: string,
+	password2?: string
 	/* 3rd factor authentication password. Mandatory when the authentication policy for the MySQL user account requires two additional authentication methods and the last one needs a password. */
-	password3?: string,
+	password3?: string
 	/* Name of the database to use for this connection. (Default: base) */
-	database: string,
+	database: string
 	/* MySql table name. (Default: auth) */
-	tableName?: string,
+	tableName?: string
 	/* Retry the query at each interval if it fails. (Default: 200ms) */
-	retryRequestDelayMs?: number,
+	retryRequestDelayMs?: number
 	/* Maximum attempts if the query fails. (Default: 10) */
-	maxtRetries?: number,
+	maxRetries?: number
 	/* Session name to identify the connection, allowing multisessions with mysql. */
-	session: string,
+	session: string
 	/* The source IP address to use for TCP connection. */
-	localAddress?: string,
+	localAddress?: string
 	/* The path to a unix domain socket to connect to. When used host and port are ignored. */
-	socketPath?: string,
+	socketPath?: string
 	/* Allow connecting to MySQL instances that ask for the old (insecure) authentication method. (Default: false) */
-	insecureAuth?: boolean,
+	insecureAuth?: boolean
 	/* If your connection is a server. (Default: false) */
-	isServer?: boolean,
+	isServer?: boolean
 	/* Use the config SSL. (Default: disabled) */
 	ssl?: string | SslOptions
 }
 
-export type valueReplacer = {
-	data: number[]
-	type: string
-}
-
 export type valueReviver = {
-	data: string
-	type: string
+	data?: string | number[];
+	value?: string | number[];
+	type?: string;
+	buffer?: boolean;
 }
 
 export type AuthenticationState = {
@@ -201,12 +199,6 @@ export type AuthenticationCreds = SignalCreds & {
 	processedHistoryMessages: Pick<any, 'key' | 'messageTimestamp'>[]
 	accountSyncCounter: number
 	accountSettings: AccountSettings
-	deviceId: string
-	phoneId: string
-	identityId: Buffer
-	registered: boolean
-	backupToken: Buffer
-	registration: RegistrationOptions
 	pairingCode: string | undefined
 	lastPropHash: string | undefined
 	routingInfo: Buffer | undefined
