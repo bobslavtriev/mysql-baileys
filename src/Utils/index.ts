@@ -1,12 +1,12 @@
 import { curve } from 'libsignal'
-import { randomBytes, randomUUID } from 'crypto'
-import { KeyPair, valueReplacer, valueReviver, AppDataSync, Fingerprint } from '../Types'
+import { randomBytes } from 'crypto'
+import { KeyPair, valueReviver, AppDataSync, Fingerprint } from '../Types'
 
 const generateKeyPair = () => {
 	const { pubKey, privKey } = curve.generateKeyPair()
 	return {
 		private: Buffer.from(privKey),
-		public: Buffer.from(pubKey.slice(1))
+		public: Buffer.from((pubKey as Uint8Array).slice(1))
 	}
 }
 
@@ -77,22 +77,26 @@ export const fromObject = (args: AppDataSync) => {
 }
 
 export const BufferJSON = {
-	replacer: (_: string, value: valueReplacer) => {
-		if(value?.type === 'Buffer' && Array.isArray(value?.data)) {
+	replacer: (_: string, value: any) => {
+		if (Buffer.isBuffer(value) || value instanceof Uint8Array || value?.type === 'Buffer') {
 			return {
 				type: 'Buffer',
 				data: Buffer.from(value?.data).toString('base64')
 			}
 		}
-		return value
+		return value;
 	},
 	reviver: (_: string, value: valueReviver) => {
-		if(value?.type === 'Buffer') {
-			return Buffer.from(value?.data, 'base64')
+		if (typeof value === 'object' && !!value && (value.buffer === true || value.type === 'Buffer')) {
+			const val = value.data || value.value;
+			if (typeof val === 'string') {
+				return Buffer.from(val, 'base64');
+			}
+			return Buffer.from(val || []);
 		}
-		return value
+		return value;
 	}
-}
+};
 
 export const initAuthCreds = () => {
 	const identityKey = generateKeyPair()
@@ -110,12 +114,7 @@ export const initAuthCreds = () => {
 		accountSettings: {
 			unarchiveChats: false
 		},
-		deviceId: Buffer.from(randomUUID().replace(/-/g, ''), 'hex').toString('base64url'),
-		phoneId: randomUUID(),
-		identityId: randomBytes(20),
-		backupToken: randomBytes(20),
 		registered: false,
-		registration: {} as never,
 		pairingCode: undefined,
 		lastPropHash: undefined,
 		routingInfo: undefined

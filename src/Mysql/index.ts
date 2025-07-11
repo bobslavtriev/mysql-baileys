@@ -15,7 +15,7 @@ import { MySQLConfig, sqlData, sqlConnection, AuthenticationCreds, Authenticatio
  * @param {string} database - Name of the database to use for this connection. (Default: base)
  * @param {string} tableName - MySql table name. (Default: auth)
  * @param {number} retryRequestDelayMs - Retry the query at each interval if it fails. (Default: 200ms)
- * @param {number} maxtRetries - Maximum attempts if the query fails. (Default: 10)
+ * @param {number} maxRetries - Maximum attempts if the query fails. (Default: 10)
  * @param {string} session - Session name to identify the connection, allowing multisessions with mysql.
  * @param {string} localAddress - The source IP address to use for TCP connection.
  * @param {string} socketPath - The path to a unix domain socket to connect to. When used host and port are ignored.
@@ -61,10 +61,10 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: Au
 
 	const tableName = config.tableName || 'auth'
 	const retryRequestDelayMs = config.retryRequestDelayMs || 200
-	const maxtRetries = config.maxtRetries || 10
+	const maxRetries = config.maxRetries || 10
 
 	const query = async (sql: string, values: string[]) => {
-		for (let x = 0; x < maxtRetries; x++){
+		for (let x = 0; x < maxRetries; x++){
 			try {
 				const [rows] = await sqlConn.query(sql, values)
 				return rows as sqlData
