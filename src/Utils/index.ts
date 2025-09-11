@@ -79,9 +79,10 @@ export const fromObject = (args: AppDataSync) => {
 export const BufferJSON = {
 	replacer: (_: string, value: any) => {
 		if (Buffer.isBuffer(value) || value instanceof Uint8Array || value?.type === 'Buffer') {
+			const val = value?.data || value;
 			return {
 				type: 'Buffer',
-				data: Buffer.from(value?.data).toString('base64')
+				data: Buffer.from(val).toString('base64')
 			}
 		}
 		return value;
@@ -111,12 +112,9 @@ export const initAuthCreds = () => {
 		nextPreKeyId: 1,
 		firstUnuploadedPreKeyId: 1,
 		accountSyncCounter: 0,
+		registered: false,
 		accountSettings: {
 			unarchiveChats: false
-		},
-		registered: false,
-		pairingCode: undefined,
-		lastPropHash: undefined,
-		routingInfo: undefined
+		}
 	}
 }
