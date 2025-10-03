@@ -13,7 +13,7 @@ If you want with your specifications, if you don't create it, the code will auto
 CREATE TABLE `auth` (
 	`session` varchar(50) NOT NULL,
 	`id` varchar(100) NOT NULL,
-	`value` json DEFAULT NULL,
+	`value` LONGTEXT DEFAULT NULL,
 	UNIQUE KEY `idxunique` (`session`,`id`),
 	KEY `idxsession` (`session`),
 	KEY `idxid` (`id`)
@@ -86,8 +86,8 @@ type MySQLConfig = {
 
 # Complete code for use
 ```ts
-const { makeWASocket, makeCacheableSignalKeyStore, fetchLatestBaileysVersion } = require('@whiskeysockets/Baileys')
-const { useMySQLAuthState } = require('mysql-baileys')
+import { makeWASocket, makeCacheableSignalKeyStore, fetchLatestBaileysVersion } from 'baileys'
+import { useMySQLAuthState } from 'mysql-baileys'
 
 async function startSock(sessionName){
 	const { error, version } = await fetchLatestBaileysVersion()

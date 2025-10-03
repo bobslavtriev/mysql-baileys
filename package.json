@@ -26,13 +26,13 @@
 		"url": "https://github.com/bobslavtriev/mysql-baileys.git"
 	},
 	"dependencies": {
-		"libsignal": "https://github.com/WhiskeySockets/libsignal-node.git",
+		"curve25519-js": "^0.0.4",
 		"mysql2": "^3.10.1"
 	},
 	"devDependencies": {
 		"@adiwajshing/eslint-config": "https://github.com/adiwajshing/eslint-config.git",
 		"@types/node": "^16.18.69",
-		"@types/uuid": "^9.0.8",
+		"@types/long": "^4.0.2",
 		"@typescript-eslint/eslint-plugin": "^6.18.0",
 		"@typescript-eslint/parser": "^6.18.0",
 		"eslint": "^8.56.0",

@@ -1,27 +1,46 @@
-import { curve } from 'libsignal'
-import { randomBytes } from 'crypto'
+import * as curveJs from 'curve25519-js'
+import { randomBytes, generateKeyPairSync } from 'crypto'
 import { KeyPair, valueReviver, AppDataSync, Fingerprint } from '../Types'
 
-const generateKeyPair = () => {
-	const { pubKey, privKey } = curve.generateKeyPair()
-	return {
-		private: Buffer.from(privKey),
-		public: Buffer.from((pubKey as Uint8Array).slice(1))
+export const generateKeyPair = (): KeyPair => {
+	try {
+		const { publicKey, privateKey } = generateKeyPairSync('x25519')
+
+		const pubBuffer = Buffer.from(publicKey.export({
+			format: 'der',
+			type: 'spki'
+		}))
+
+		const privBuffer = Buffer.from(privateKey.export({
+			format: 'der',
+			type: 'pkcs8'
+		}))
+
+		return {
+			public: pubBuffer.slice(12, 44),
+			private: privBuffer.slice(16, 48)
+		}
+	} catch(e) {
+		const keyPair = curveJs.generateKeyPair(randomBytes(32))
+		return {
+			public: Buffer.from(keyPair.public),
+			private: Buffer.from(keyPair.private)
+		}
 	}
 }
 
-const generateSignalPubKey = (pubKey: Uint8Array) => {
-	return pubKey.length === 33 ? pubKey : Buffer.concat([Buffer.from([5]), pubKey])
+const calculateSignature = (privKey: Uint8Array | Buffer, message: Uint8Array | Buffer) => {
+	return Buffer.from(curveJs.sign(privKey, message))
 }
 
-const sign = (privateKey: object, buf: Uint8Array) => {
-	return curve.calculateSignature(privateKey, buf)
+const generateSignalPubKey = (pubKey: Uint8Array | Buffer) => {
+	return pubKey.length === 33 ? pubKey : Buffer.concat([Buffer.from([5]), pubKey])
 }
 
 const signedKeyPair = (identityKeyPair: KeyPair, keyId: number) => {
 	const preKey = generateKeyPair()
 	const pubKey = generateSignalPubKey(preKey.public)
-	const signature = sign(identityKeyPair.private, pubKey)
+	const signature = calculateSignature(identityKeyPair.private, pubKey)
 	return { keyPair: preKey, signature, keyId }
 }
 

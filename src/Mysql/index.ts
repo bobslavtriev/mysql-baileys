@@ -49,7 +49,7 @@ async function connection(config: MySQLConfig, force: boolean = false){
 		})
 
 		if (newConnection) {
-			await conn.execute('CREATE TABLE IF NOT EXISTS `' + (config.tableName || 'auth') + '` (`session` varchar(50) NOT NULL, `id` varchar(80) NOT NULL, `value` json DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM;')
+			await conn.execute('CREATE TABLE IF NOT EXISTS `' + (config.tableName || 'auth') + '` (`session` varchar(50) NOT NULL, `id` varchar(80) NOT NULL, `value` LONGTEXT DEFAULT NULL, UNIQUE KEY `idxunique` (`session`,`id`), KEY `idxsession` (`session`), KEY `idxid` (`id`)) ENGINE=MyISAM;')
 		}
 	}
 
@@ -86,7 +86,7 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: Au
 	}
 
 	const writeData = async (id: string, value: object) => {
-		const valueFixed = JSON.stringify(value, BufferJSON.replacer)
+		const valueFixed = typeof value === 'object' ? JSON.stringify(value, BufferJSON.replacer) : value
 		await query(`INSERT INTO ${tableName} (session, id, value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?`, [config.session, id, valueFixed, valueFixed])
 	}
 
