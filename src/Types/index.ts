@@ -189,7 +189,9 @@ export type AuthenticationCreds = SignalCreds & {
 	processedHistoryMessages: Pick<any, 'key' | 'messageTimestamp'>[]
 	accountSyncCounter: number
 	accountSettings: AccountSettings
-	pairingCode?: string
-	lastPropHash?: string
-	routingInfo?: Buffer
+	registered: boolean
+	pairingCode: string | undefined
+	lastPropHash: string | undefined
+	routingInfo: Buffer | undefined
+	additionalData?: any | undefined
 }
