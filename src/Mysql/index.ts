@@ -82,9 +82,9 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: Au
 		}
 		const value = data[0].value;
 		if (typeof value === 'object' || /^[\{\[]/.test(value)){
-			return typeof value === 'object' ? value : JSON.parse(value, Utils_1.BufferJSON.reviver);
+			return typeof value === 'object' ? value : JSON.parse(value, BufferJSON.reviver);
 		}
-		return credsParsed
+		return value
 	}
 
 	const writeData = async (id: string, value: object) => {
