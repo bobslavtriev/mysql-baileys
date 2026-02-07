@@ -81,8 +81,8 @@ export const useMySQLAuthState = async(config: MySQLConfig): Promise<{ state: Au
 			return null
 		}
 		const value = data[0].value;
-		if (typeof value === 'object' || /^[\{\[]/.test(value)){
-			return typeof value === 'object' ? value : JSON.parse(value, BufferJSON.reviver);
+		if (/^[\{\[]/.test(value)){
+			return JSON.parse(value, BufferJSON.reviver);
 		}
 		return value
 	}
